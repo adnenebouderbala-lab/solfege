@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Solfège en 30 jours</title>
+<meta name="theme-color" content="#12343B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Solfège">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+@font-face{font-family:"Bricolage Grotesque";src:url(fonts/bricolage.woff2) format("woff2");font-weight:200 800;font-display:swap}
+@font-face{font-family:"Figtree";src:url(fonts/figtree.woff2) format("woff2");font-weight:300 900;font-display:swap}
+
+:root{
+  --paper:#EAF0EF; --card:#FFFFFF; --ink:#12343B; --soft:#4F6C72; --line:#C5D3D2; --staff:#7E979B;
+  --brass:#DFA20F; --brass-deep:#B37E00; --ok:#187A50; --ok-bg:#DDF2E7; --no:#B93A28; --no-bg:#FBE3DE;
+  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --body:"Figtree","Avenir Next","Segoe UI",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D2126; --card:#15323A; --ink:#E7F1EF; --soft:#9FB9B8; --line:#2B4A52; --staff:#6F8E93;
+    --brass:#F0B93A; --brass-deep:#F0B93A; --ok:#55CC93; --ok-bg:#143F31; --no:#F58A76; --no-bg:#4A211B;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D2126; --card:#15323A; --ink:#E7F1EF; --soft:#9FB9B8; --line:#2B4A52; --staff:#6F8E93;
+  --brass:#F0B93A; --brass-deep:#F0B93A; --ok:#55CC93; --ok-bg:#143F31; --no:#F58A76; --no-bg:#4A211B;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+#app{max-width:540px;margin:0 auto;padding:20px 18px 110px}
+h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;letter-spacing:-.01em}
+h1{font-size:2.5rem;font-weight:700}
+h2{font-size:1.7rem;font-weight:700}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0 0 .9em}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+
+.lede{color:var(--soft);margin:.5rem 0 1.2rem}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:54px;padding:12px 18px;border-radius:14px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:700;font-size:1.05rem;text-align:center}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn + .btn{margin-top:10px}
+.btn small{display:block;font-weight:500;opacity:.8;font-size:.85rem}
+.link{background:none;border:0;padding:10px 0;color:var(--soft);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+
+.meter{height:8px;border-radius:8px;background:var(--line);overflow:hidden;margin:6px 0 18px}
+.meter i{display:block;height:100%;background:var(--brass);border-radius:8px;transition:width .3s}
+
+.week{margin-top:26px}
+.week header{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.week header span{color:var(--soft);font-size:.9rem;font-weight:600;white-space:nowrap}
+.score{background:var(--card);border-radius:18px;padding:6px 4px 2px;margin-top:10px}
+.week details{margin-top:6px}
+.week summary{color:var(--soft);font-weight:600;font-size:.95rem;padding:10px 4px;cursor:pointer}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:12px 4px;min-height:52px}
+.row b{font-family:var(--display);width:1.8em;flex:none;color:var(--soft)}
+.row span{flex:1}
+.row em{font-style:normal;font-weight:700;font-size:.9rem;color:var(--ok)}
+
+svg.staff{display:block;width:100%;height:auto;max-width:440px;margin:0 auto}
+.sl{stroke:var(--staff);stroke-width:1}
+.it{color:var(--ink)}
+.it.done{color:var(--brass)}
+.it.hl{color:var(--brass-deep)}
+.gl,.nh{fill:currentColor}
+.ho{fill:none;stroke:currentColor;stroke-width:1.9}
+.st{stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
+.lb{font:600 11.5px var(--body);fill:var(--soft);text-anchor:middle}
+.it.next .lb{fill:var(--ink);font-weight:700}
+.ts{font:700 25px Georgia,"Times New Roman",serif;fill:var(--ink);text-anchor:middle}
+.qm{font:700 26px var(--display);fill:var(--brass-deep);text-anchor:middle}
+.ring{fill:none;stroke:var(--brass);stroke-width:2}
+g[data-act]{cursor:pointer}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:-6px 0 14px}
+.back{background:none;border:0;padding:10px 10px 10px 0;font-weight:700;color:var(--soft);min-height:44px}
+.tag{font-weight:700;color:var(--brass-deep)}
+.lesson{margin-top:16px}
+.lesson figure{margin:14px 0 18px;background:var(--card);border-radius:16px;padding:10px 6px}
+.lesson figcaption{font-size:.9rem;color:var(--soft);text-align:center;padding:2px 10px 6px}
+.lesson ul{padding-left:1.1em;margin:0 0 .9em}
+.lesson li{margin-bottom:.35em}
+.tip{border-left:4px solid var(--brass);padding:4px 0 4px 12px;margin:0 0 1em}
+.sticky{position:sticky;bottom:calc(14px + env(safe-area-inset-bottom,0px));margin-top:20px}
+
+.qhead{font-size:.95rem;font-weight:600;color:var(--soft)}
+.qtext{font-family:var(--display);font-weight:700;font-size:1.4rem;line-height:1.2;margin:10px 0 12px}
+.figbox{background:var(--card);border-radius:18px;padding:10px 6px;margin-bottom:14px}
+.choices{display:grid;gap:10px}
+.choices.c4{grid-template-columns:repeat(4,1fr)}
+.choices.c2{grid-template-columns:repeat(2,1fr)}
+.choice{min-height:56px;border-radius:14px;border:2px solid var(--line);background:var(--card);font-weight:700;font-size:1.05rem;padding:8px 10px;line-height:1.25}
+.choice:disabled{cursor:default;opacity:.55}
+.choice.good{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);opacity:1}
+.choice.bad{border-color:var(--no);background:var(--no-bg);color:var(--no);opacity:1}
+.choice svg.staff{max-width:300px}
+.fb{min-height:64px;margin-top:14px}
+.fb p{font-weight:600;margin-bottom:10px}
+.fb .y{color:var(--ok)} .fb .n{color:var(--no)}
+.listen{margin-bottom:14px}
+.hint{font-size:.88rem;color:var(--soft);margin-top:-6px}
+
+.big{font-family:var(--display);font-weight:700;font-size:4.2rem;line-height:1;margin:18px 0 6px}
+.big small{font-size:1.4rem;color:var(--soft)}
+
+.card{display:block;width:100%;text-align:left;background:var(--card);border:0;border-radius:16px;padding:16px;margin-top:10px;min-height:64px}
+.card b{display:block;font-family:var(--display);font-size:1.1rem}
+.card span{color:var(--soft);font-size:.92rem}
+
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+.tabs div{display:flex;width:100%;max-width:540px}
+.tabs button{flex:1;background:none;border:0;min-height:58px;font-weight:700;color:var(--soft);border-top:3px solid transparent}
+.tabs button[aria-current="page"]{color:var(--ink);border-top-color:var(--brass)}
+.tabs[hidden]{display:none}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+.kbd{position:relative;display:flex;height:158px;margin-top:4px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.kbd.static{height:104px;margin:6px 8px 4px}
+.wk{flex:1;min-width:0;margin:0;padding:0 0 8px;background:#FBFCFC;border:1.5px solid #12343B;border-right-width:0;border-radius:0 0 7px 7px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;color:#12343B;font-weight:700;font-size:.72rem;line-height:1}
+.wk.last{border-right-width:1.5px}
+.wk i{width:9px;height:9px;border-radius:50%;background:#DFA20F}
+.bk{position:absolute;top:0;height:60%;margin:0;padding:0;background:#12343B;border:0;border-radius:0 0 5px 5px}
+.wk.hl{background:#F8E2A6}.bk.hl{background:#C98F00}
+.wk.good{background:#BFE8D2}.bk.good{background:#1E9462}
+.wk.bad{background:#F6C4BB}.bk.bad{background:#C9432F}
+.dots{letter-spacing:.3em;text-align:center;font-size:1.2rem;color:var(--brass-deep);margin:0 0 8px}
+.rev{margin:0 0 -4px;font-size:.92rem}
+.plan{background:var(--card);border-radius:14px;padding:12px 14px;margin:18px 0 0}
+.plan b{display:block;font-family:var(--display);margin-bottom:2px}
+.plan span{display:block;color:var(--soft);font-size:.92rem}
+.plan + .lede{margin-top:12px}
+.plan + .btn{margin-top:14px}
+.beats{display:flex;gap:12px;justify-content:center;margin:4px 0 12px}
+.beats i{width:14px;height:14px;border-radius:50%;background:var(--line)}
+.beats i.on{background:var(--brass)}
+.pad{display:block;width:100%;min-height:150px;border-radius:18px;border:2px solid var(--ink);background:var(--card);font-family:var(--display);font-size:1.6rem;font-weight:700;padding:14px;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.pad small{display:block;font:500 .85rem/1.35 var(--body);color:var(--soft);margin-top:8px}
+.pad.hit{background:var(--brass)}
+.pad:disabled{opacity:.55}
+
+.steps{display:flex;gap:6px;margin:8px 0 4px}
+.steps i{flex:1;height:5px;border-radius:5px;background:var(--line)}
+.steps i.on{background:var(--brass)}
+.navrow{display:flex;gap:10px;margin-top:20px}
+.navrow .btn{margin-top:0}
+.navrow .btn.ghost{flex:0 0 36%}
+.lesson p{font-size:1.08rem}
+.mini{display:block;margin:2px auto 8px;min-height:44px;padding:8px 20px;border-radius:12px;border:2px solid var(--line);background:transparent;font-weight:700}
+.xname{text-align:center;font-family:var(--display);font-weight:700;font-size:1.3rem;margin:6px 0 8px}
+.explore .figbox{margin-bottom:4px}
+.plan span b{display:inline;font-family:var(--body);color:var(--ink);margin-right:8px}
+.it.dim{opacity:.5}
+#sstaff g.mv{animation:slide .16s ease-out}
+@keyframes slide{from{transform:translateX(46px)}to{transform:none}}
+.shead{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--display);font-weight:700;font-size:1.3rem;margin:0 0 10px}
+.seg{display:flex;gap:8px;margin:8px 0 18px}
+.seg button{flex:1;min-height:50px;border-radius:12px;border:2px solid var(--line);background:var(--card);font-weight:700;padding:6px}
+.seg button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.card.feat{border:2px solid var(--brass)}
+@media (prefers-reduced-motion: reduce){#sstaff g.mv{animation:none}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<nav class="tabs" id="tabs" aria-label="Navigation"><div>
+  <button data-act="home" id="tab-home">Programme</button>
+  <button data-act="free" id="tab-free">Entraînement libre</button>
+</div></nav>
+<script>
+"use strict";
+const G={"gClef":"M15.19 -16.79C15.14 -17.27 15.19 -17.3 15.44 -17.55C19.82 -21.62 23.14 -26.76 23.14 -32.97C23.14 -36.48 22.16 -39.96 20.5 -42.37C19.88 -43.27 18.84 -44.39 18.39 -44.39C17.83 -44.39 16.57 -43.36 15.78 -42.46C12.78 -39.14 11.79 -34.09 11.79 -29.88C11.79 -27.55 12.1 -24.91 12.38 -23.25C12.47 -22.77 12.5 -22.69 12.02 -22.27C6.18 -17.47 0 -11.68 0 -3.51C0 3.51 4.8 10.19 14.71 10.19C15.64 10.19 16.71 10.11 17.52 9.94C17.94 9.86 18.03 9.83 18.11 10.31C18.59 13.03 19.21 16.54 19.21 18.45C19.21 24.43 15.16 25.16 12.78 25.16C10.59 25.16 9.55 24.51 9.55 23.98C9.55 23.7 9.91 23.59 10.84 23.28C12.1 22.91 13.53 21.85 13.53 19.49C13.53 17.27 12.13 15.36 9.66 15.36C6.96 15.36 5.34 17.52 5.34 20.02C5.34 22.63 6.91 26.62 13.03 26.62C15.72 26.62 20.98 25.38 20.98 18.53C20.98 16.2 20.25 12.38 19.82 9.86C19.74 9.38 19.77 9.43 20.33 9.18C24.43 7.55 27.13 4.13 27.13 -0.45C27.13 -5.62 23.33 -10.19 17.38 -10.19C16.34 -10.19 16.34 -10.19 16.2 -10.92ZM19.01 -38.13C20.33 -38.13 21.43 -37.04 21.43 -34.82C21.43 -30.33 17.58 -26.68 14.41 -23.9C14.12 -23.64 13.96 -23.7 13.87 -24.23C13.7 -25.27 13.62 -26.65 13.62 -27.94C13.62 -34.26 16.54 -38.13 19.01 -38.13ZM14.6 -10.59C14.71 -9.83 14.71 -9.86 13.98 -9.63C10.45 -8.42 8.12 -5.22 8.12 -1.77C8.12 1.85 10.02 4.44 12.78 5.39C13.11 5.5 13.59 5.62 13.87 5.62C14.18 5.62 14.35 5.42 14.35 5.17C14.35 4.89 14.04 4.77 13.76 4.66C12.05 3.93 10.84 2.19 10.84 0.34C10.84 -1.99 12.41 -3.71 14.88 -4.41C15.53 -4.58 15.61 -4.52 15.7 -4.07L17.72 7.97C17.8 8.42 17.75 8.42 17.16 8.54C16.51 8.65 15.7 8.73 14.88 8.73C7.81 8.73 3.23 4.8 3.23 -0.81C3.23 -3.2 3.65 -6.4 6.99 -10.19C9.43 -12.89 11.29 -14.41 13.17 -15.92C13.59 -16.26 13.67 -16.2 13.76 -15.78ZM17.38 -4.16C17.3 -4.66 17.35 -4.77 17.83 -4.72C21.12 -4.44 23.81 -1.68 23.81 1.85C23.81 4.41 22.27 6.46 20.02 7.61C19.54 7.83 19.46 7.83 19.38 7.36Z","fClef":"M10.19 -10.59C3.14 -10.59 0 -5.45 0 -1.57C0 1.66 1.68 4.44 4.97 4.44C7.53 4.44 9.27 2.67 9.27 0.17C9.27 -2.41 7.36 -4.04 5.39 -4.04C4.3 -4.04 3.88 -3.76 3.37 -3.76C2.84 -3.76 2.7 -4.07 2.7 -4.49C2.7 -6.09 5.14 -9.07 9.27 -9.07C13.53 -9.07 15.42 -4.86 15.42 1.49C15.42 12.78 9.83 19.09 0.39 24.46C0.03 24.65 -0.2 24.88 -0.2 25.19C-0.2 25.44 -0.03 25.67 0.34 25.67C0.53 25.67 0.76 25.61 1.01 25.47C10.95 20.61 21.48 13.42 21.48 1.12C21.48 -5.9 17.18 -10.59 10.19 -10.59ZM25.44 -7.27C24.18 -7.27 23.22 -6.32 23.22 -5.05C23.22 -3.79 24.18 -2.84 25.44 -2.84C26.68 -2.84 27.66 -3.79 27.66 -5.05C27.66 -6.32 26.68 -7.27 25.44 -7.27ZM25.47 2.86C24.23 2.86 23.28 3.79 23.28 5.05C23.28 6.32 24.23 7.24 25.47 7.24C26.73 7.24 27.66 6.32 27.66 5.05C27.66 3.79 26.73 2.86 25.47 2.86Z","accidentalSharp":"M9.58 -4.77C9.86 -4.89 10.08 -5.22 10.08 -5.45L10.08 -8.34C10.08 -8.54 9.94 -8.65 9.77 -8.65C9.72 -8.65 9.66 -8.65 9.58 -8.62C9.58 -8.62 8.76 -8.28 8.56 -8.26C8.28 -8.26 8 -8.45 8 -8.76L8 -13.7C8 -13.96 7.75 -14.15 7.44 -14.15C7.05 -14.15 6.8 -13.96 6.8 -13.7L6.8 -8.45C6.74 -8.06 6.63 -7.53 6.26 -7.27C5.78 -6.99 4.41 -6.43 3.71 -6.26C3.37 -6.26 3.23 -6.74 3.23 -7.08L3.23 -11.93C3.23 -12.16 2.95 -12.38 2.67 -12.38C2.27 -12.38 2.02 -12.16 2.02 -11.93L2.02 -6.46C2.02 -5.9 1.77 -5.5 1.54 -5.39C1.29 -5.25 0.48 -4.94 0.48 -4.94C0.2 -4.86 0 -4.52 0 -4.3L0 -1.4C0 -1.18 0.11 -1.04 0.37 -1.04L0.45 -1.1C0.48 -1.1 1.1 -1.35 1.4 -1.49L1.46 -1.54C1.77 -1.54 2.02 -1.12 2.02 -0.81L2.02 3.2C2.02 3.65 1.83 4.02 1.57 4.13C1.35 4.21 0.48 4.58 0.48 4.58C0.2 4.66 0 4.97 0 5.22L0 8.09C0 8.34 0.11 8.45 0.37 8.45L0.45 8.42C0.48 8.42 1.04 8.17 1.4 8.06C1.46 8 1.49 8 1.54 8C1.83 8 2.02 8.45 2.02 8.65L2.02 13.62C2.02 13.87 2.27 14.07 2.56 14.07C2.95 14.07 3.23 13.87 3.23 13.62L3.23 8C3.23 7.47 3.43 7.19 3.65 7.1L6.09 6.09C6.09 6.09 6.15 6.09 6.15 6.09L6.23 6.07C6.6 6.07 6.8 6.54 6.8 6.8L6.8 11.85C6.8 12.1 7.05 12.3 7.33 12.3C7.75 12.3 8 12.1 8 11.85L8 6.09C8 5.78 8.17 5.31 8.45 5.17C8.73 5.05 9.58 4.72 9.58 4.72C9.86 4.61 10.08 4.3 10.08 4.04L10.08 1.18C10.08 0.98 9.94 0.84 9.77 0.84C9.72 0.84 9.66 0.84 9.58 0.9L8.54 1.29C8.28 1.29 8 1.04 8 0.56L8 -3.2C8 -3.48 8.2 -4.24 8.54 -4.38ZM6.8 1.83C6.54 2.64 4.66 3.43 3.71 3.43C3.48 3.43 3.29 3.37 3.23 3.23C3.14 3.06 3.12 2.19 3.12 1.21C3.12 -0.03 3.14 -1.46 3.23 -1.77C3.31 -2.47 5.17 -3.31 6.18 -3.31C6.46 -3.31 6.71 -3.23 6.8 -3.06C6.88 -2.86 6.96 -1.85 6.96 -0.76C6.96 0.34 6.88 1.46 6.8 1.83Z","accidentalFlat":"M0.48 6.88C0.62 7.05 0.73 7.08 0.84 7.08C0.98 7.08 1.1 6.99 1.1 6.99C2.3 6.32 3.29 5.22 4.3 4.52C7.89 2.02 9.13 -0.45 9.13 -2.3C9.13 -4.61 7.36 -6.07 5.5 -6.18C4.8 -6.18 3.85 -5.87 3.29 -5.5C3.03 -5.31 2.58 -4.94 2.39 -4.94C2.3 -4.94 2.27 -4.94 2.19 -4.97C1.91 -5.08 1.74 -5.39 1.74 -5.67C1.77 -6.54 2.02 -16.26 2.02 -17.07C2.02 -17.52 1.66 -17.75 1.26 -17.75C0.67 -17.75 0.03 -17.35 0 -16.62C0 -16.62 0.17 6.46 0.48 6.88ZM1.91 3.29C1.91 3.29 1.77 0.84 1.77 -0.76C1.77 -1.4 1.83 -1.91 1.85 -2.05C2.13 -2.86 3.76 -4.04 4.69 -4.04C5.87 -4.04 6.35 -2.7 6.35 -1.68C6.35 0.48 4.49 2.67 2.75 3.76C2.58 3.85 2.47 3.88 2.36 3.88C1.99 3.88 1.91 3.48 1.91 3.29Z","accidentalNatural":"M5.7 -7.33C5.62 -7.33 5.59 -7.27 5.53 -7.27C5.53 -7.27 2.95 -6.35 1.91 -6.35C1.66 -6.35 1.49 -6.4 1.49 -6.54L1.49 -13.31C1.49 -13.59 1.26 -13.79 1.01 -13.79L0.48 -13.79C0.2 -13.79 0 -13.59 0 -13.31L0 7.53C0 7.75 0.11 7.89 0.37 7.89L0.45 7.83C0.48 7.83 0.56 7.83 0.62 7.81C1.18 7.55 3.43 6.6 4.61 6.6C5.03 6.6 5.31 6.71 5.31 7.05L5.31 13.06C5.31 13.34 5.5 13.53 5.78 13.53L6.32 13.53C6.54 13.53 6.8 13.34 6.8 13.06L6.8 -7.24C6.8 -7.44 6.63 -7.55 6.46 -7.55C6.43 -7.55 6.35 -7.55 6.32 -7.53ZM1.49 -1.57C1.49 -2.13 3.96 -3.2 4.94 -3.2C5.17 -3.2 5.31 -3.14 5.31 -3L5.31 1.18C5.31 1.91 3 2.84 1.99 2.84C1.68 2.84 1.49 2.75 1.49 2.58Z","restQuarter":"M3.14 1.54C3.79 2.36 4.38 3.12 4.89 3.96C4.97 4.13 5.14 4.44 5.14 4.52C5.14 4.58 5.14 4.66 5.08 4.69C5.03 4.86 4.86 4.89 4.66 4.89C4.49 4.89 4.16 4.8 4.02 4.77C3.96 4.77 3.88 4.77 3.85 4.77L3.51 4.66C1.4 4.66 0.03 6.54 0.03 8.54C0.03 10.56 1.77 12.52 4.72 14.8C5.05 15.05 5.45 15.16 5.78 15.16C6.07 15.16 6.35 15.08 6.4 14.91C6.43 14.8 6.46 14.71 6.46 14.63C6.46 14.26 6.15 13.96 5.81 13.67C5.31 13.67 4.86 12.58 4.77 12.21C4.66 11.88 4.61 11.51 4.61 11.15C4.61 9.49 5.45 8.2 7.16 8.2C8.34 8.2 9.66 8.65 10.36 8.9L10.39 8.93C10.56 8.99 10.64 8.99 10.73 8.99C10.84 8.99 10.92 8.93 10.92 8.82C10.92 8.34 9.86 6.99 9.43 6.51C7.89 4.66 6.63 3.14 6.63 0.9C6.63 0.84 6.63 0.81 6.63 0.76L6.68 0.48C6.68 0.45 6.68 0.39 6.68 0.37C6.82 -1.99 8.28 -3.93 9.35 -5.59C9.46 -5.78 9.49 -5.98 9.49 -6.18C9.49 -6.6 9.35 -6.96 9.35 -6.96C9.35 -6.96 3.37 -14.07 2.67 -14.77C2.47 -14.97 2.19 -15.08 1.94 -15.08C1.54 -15.08 1.12 -14.8 1.12 -14.24C1.12 -14.04 1.18 -13.82 1.29 -13.59C1.46 -13.14 3.76 -11.09 3.76 -8.17C3.76 -6.68 3.14 -4.94 1.35 -3.03C0.93 -2.64 0.76 -2.19 0.76 -1.85C0.76 -1.29 1.18 -0.9 1.18 -0.9Z","rest8th":"M5.42 -4.32C5.42 -5.81 4.21 -7.05 2.7 -7.05C1.21 -7.05 0 -5.81 0 -4.32C0 -3.48 0.48 -2.75 1.1 -2.27C1.74 -1.83 2.5 -1.57 3.29 -1.57C3.85 -1.57 4.41 -1.68 4.86 -1.85C5.42 -2.02 5.78 -2.19 6.32 -2.47C6.4 -2.5 6.46 -2.5 6.51 -2.5C6.68 -2.5 6.71 -2.36 6.71 -2.13C6.71 -2.02 6.71 -1.85 6.68 -1.68C6.54 -1.1 3.65 6.96 2.92 9.63C2.92 10.11 3.85 10.14 4.07 10.14C4.52 10.14 5.08 10.08 5.5 9.74C5.62 9.66 9.58 -4.52 9.58 -4.52C9.74 -5.25 9.94 -5.9 10 -6.09C10 -6.51 9.58 -6.71 9.49 -6.74C9.43 -6.74 9.29 -6.74 9.07 -6.6C8.76 -6.35 6.74 -3.93 5.42 -3.93Z","flag8thUp":"M9.63 31.96C9.63 31.96 10.67 28.11 10.67 24.94C10.67 19.88 8.56 15.14 6.04 11.09C3.96 7.89 2.27 4.41 1.63 0.53C1.49 -0.11 1.18 -0.37 0.76 -0.37C0.34 -0.37 0 -0.25 0 0.25L0 9.91C2.67 10.39 6.51 15.89 7.97 19.32C8.56 20.69 8.93 23 8.93 25.38C8.93 27.21 8.65 29.12 7.97 30.94C7.89 31.17 7.83 31.37 7.83 31.53C7.83 32.18 8.26 32.54 8.48 32.71C8.73 32.88 9.43 32.63 9.63 31.96Z","flag16thUp":"M11.01 32.18C11.15 31.98 11.29 29.68 11.29 27.74L11.29 26.84C11.29 25.16 10.84 23.5 10.11 21.99C10.11 21.87 10.08 21.79 10.08 21.62C10.08 21.57 10.08 21.48 10.11 21.34C10.22 21.12 11.12 18.67 11.12 16.2C11.12 15.7 11.09 15.25 11.01 14.77C10.59 12.02 9.55 10.87 6.63 7.72C4.44 5.39 2.19 4.72 1.49 0.45C1.4 0 0.93 -0.08 0.67 -0.08C0.45 -0.08 0 0.03 0 0.34L0 16.01L0.2 16.01C2.7 16.09 5.59 16.17 8.37 21.85C9.29 23.78 9.66 25.75 9.66 27.86C9.66 29.03 9.55 30.24 9.35 31.45C9.29 31.62 9.29 31.7 9.29 31.81C9.29 32.35 9.63 32.88 10.19 32.88C10.47 32.88 10.75 32.71 11.01 32.18ZM8.45 18.56C7.81 17.55 7.1 16.74 6.26 15.78C4.38 13.59 2.5 12.61 1.66 9.29C1.63 9.27 1.63 9.21 1.63 9.18C1.63 9.01 1.85 8.76 2.19 8.76L2.5 8.76C4.97 8.76 7.16 11.04 8.48 13.03C9.21 14.07 9.58 15.33 9.58 16.62C9.58 16.9 9.58 17.16 9.55 17.44C9.46 17.75 9.46 18.17 9.27 18.48C9.21 18.59 8.93 18.73 8.73 18.73C8.62 18.73 8.54 18.67 8.45 18.56Z"};
+
+/* ---------- outils ---------- */
+const NAMES=['Do','Ré','Mi','Fa','Sol','La','Si'];
+const mod=(n,m)=>((n%m)+m)%m;
+const nameOf=d=>NAMES[mod(d,7)];
+const semis=d=>[0,2,4,5,7,9,11][mod(d,7)]+12*Math.floor(d/7);
+const fS=s=>261.63*Math.pow(2,s/12);
+const freq=(d,acc=0)=>fS(semis(d)+acc);
+const rnd=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rnd(a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
+const range=(a,b)=>{const r=[];for(let i=a;i<=b;i++)r.push(i);return r;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- son ---------- */
+let AC=null;
+function ac(){ if(!AC){const C=window.AudioContext||window.webkitAudioContext; if(!C)return null; AC=new C();} if(AC.state==='suspended')AC.resume(); return AC; }
+function tone(f,t,dur,vol){
+  const c=ac(); if(!c)return; vol=vol||0.22;
+  const g=c.createGain(); g.connect(c.destination);
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.015); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  [['triangle',1,1],['sine',2,0.25]].forEach(([type,m,v])=>{const o=c.createOscillator(),og=c.createGain();o.type=type;o.frequency.value=f*m;og.gain.value=v;o.connect(og);og.connect(g);o.start(t);o.stop(t+dur+0.05);});
+}
+function click(t,strong){
+  const c=ac(); if(!c)return; const o=c.createOscillator(),g=c.createGain(); o.type='square'; o.frequency.value=strong?1500:1000;
+  g.gain.setValueAtTime(strong?0.12:0.07,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.05); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+0.06);
+}
+const now=()=>{const c=ac();return c?c.currentTime+0.08:0;};
+function playSeq(fs,gap,dur){const t=now();fs.forEach((f,i)=>tone(f,t+i*gap,dur||0.8));}
+
+/* ---------- figures rythmiques ---------- */
+const BEATS={w:4,h:2,q:1,e:.5,s:.25};
+const T=tok=>({dur:tok[0],dot:tok.includes('.'),rest:tok.includes('r')});
+const beatsOf=it=>BEATS[it.dur]*(it.dot?1.5:1);
+function beamify(items){
+  for(let i=0;i<items.length-1;i++){const a=items[i],b=items[i+1];
+    if(a.dur==='e'&&b.dur==='e'&&!a.rest&&!b.rest&&!a.beam&&!b.beam){a.beam='start';b.beam='end';i++;}}
+  return items;
+}
+const R=toks=>beamify(toks.map(T));
+function playRhythm(toks,beats){
+  const c=ac(); if(!c)return; const bt=60/84; let t=now(); beats=beats||4;
+  for(let i=0;i<beats;i++)click(t+i*bt,i===0);
+  t+=beats*bt; for(let i=0;i<beats;i++)click(t+i*bt,false);
+  toks.map(T).forEach(it=>{const b=beatsOf(it); if(!it.rest)tone(freq(5),t,Math.max(0.18,b*bt*0.92),0.25); t+=b*bt;});
+}
+
+/* ---------- dessin de la portée ---------- */
+function staff(o){
+  const W=o.w||320, items=o.items||[], clef=o.clef===undefined?'sol':o.clef, base=clef==='fa'?-10:2;
+  const hasLb=items.some(it=>it.label!==undefined), H=hasLb?128:106;
+  let s='', x=12;
+  for(let i=0;i<5;i++)s+=`<line class="sl" x1="4" x2="${W-4}" y1="${60+i*10}" y2="${60+i*10}"/>`;
+  s+='<g class="it">';
+  if(clef==='sol'){s+=`<path class="gl" d="${G.gClef}" transform="translate(${x},90)"/>`;x+=36;}
+  else if(clef==='fa'){s+=`<path class="gl" d="${G.fClef}" transform="translate(${x},70)"/>`;x+=38;}
+  if(o.key&&o.key.n){
+    const pos=o.key.t==='#'?[8,5,9,6,3,7,4]:[4,7,3,6,2,5,1], gl=o.key.t==='#'?G.accidentalSharp:G.accidentalFlat;
+    for(let i=0;i<o.key.n;i++){s+=`<path class="gl" d="${gl}" transform="translate(${x},${100-pos[i]*5})"/>`;x+=10.5;}
+    x+=8;
+  }
+  if(o.time){s+=`<text class="ts" x="${x+8}" y="79">${o.time[0]}</text><text class="ts" x="${x+8}" y="99">${o.time[1]}</text>`;x+=26;}
+  s+='</g>';
+  const n=items.length, avail=W-x-12, gap=Math.min(o.gap||48,avail/Math.max(n,1));
+  const x0=x+(o.center?(avail-gap*n)/2:0)+gap/2;
+  let beamFrom=null;
+  items.forEach((it,i)=>{
+    const X=x0+i*gap; let g='';
+    if(it.txt!==undefined){ s+=`<text class="qm" x="${X}" y="89">${it.txt}</text>`; return; }
+    if(it.rest){
+      if(it.dur==='w')g+=`<rect class="nh" x="${X-7}" y="70" width="14" height="5.5"/>`;
+      else if(it.dur==='h')g+=`<rect class="nh" x="${X-7}" y="74.5" width="14" height="5.5"/>`;
+      else if(it.dur==='q')g+=`<path class="gl" d="${G.restQuarter}" transform="translate(${X-5},80)"/>`;
+      else g+=`<path class="gl" d="${G.rest8th}" transform="translate(${X-5},80)"/>`;
+    } else {
+      const step=it.step!==undefined?it.step:(it.d!==undefined?it.d-base:3), y=100-step*5, dur=it.dur||'q', up=step<4;
+      for(let k=-2;k>=step;k-=2)g+=`<line class="st" x1="${X-11}" x2="${X+11}" y1="${100-k*5}" y2="${100-k*5}"/>`;
+      for(let k=10;k<=step;k+=2)g+=`<line class="st" x1="${X-11}" x2="${X+11}" y1="${100-k*5}" y2="${100-k*5}"/>`;
+      if(it.ring)g+=`<circle class="ring" cx="${X}" cy="${y}" r="12"/>`;
+      if(dur==='w')g+=`<ellipse class="ho" cx="${X}" cy="${y}" rx="7" ry="4.2" style="stroke-width:2.6"/>`;
+      else if(dur==='h')g+=`<ellipse class="ho" cx="${X}" cy="${y}" rx="5.6" ry="3.7" transform="rotate(-22 ${X} ${y})"/>`;
+      else g+=`<ellipse class="nh" cx="${X}" cy="${y}" rx="6.3" ry="4.5" transform="rotate(-22 ${X} ${y})"/>`;
+      if(dur!=='w'){
+        const sx=up?X+5.8:X-5.8, y2=up?y-31:y+31;
+        g+=`<line class="st" x1="${sx}" x2="${sx}" y1="${up?y-1.5:y+1.5}" y2="${y2}"/>`;
+        if((dur==='e'||dur==='s')&&!it.beam){
+          const gl=dur==='e'?G.flag8thUp:G.flag16thUp;
+          g+=`<path class="gl" d="${gl}" transform="translate(${sx-0.7},${y2})${up?'':' scale(1,-1)'}"/>`;
+        }
+        if(it.beam==='start')beamFrom={x:sx,y:y2};
+        if(it.beam==='end'&&beamFrom){g+=`<polygon class="nh" points="${beamFrom.x-0.7},${beamFrom.y} ${sx+0.7},${y2} ${sx+0.7},${y2+5} ${beamFrom.x-0.7},${beamFrom.y+5}"/>`;beamFrom=null;}
+      }
+      if(it.acc!==undefined&&it.acc!==null){const gl=it.acc===1?G.accidentalSharp:(it.acc===-1?G.accidentalFlat:G.accidentalNatural);g+=`<path class="gl" d="${gl}" transform="translate(${X-20},${y})"/>`;}
+      if(it.dot)g+=`<circle class="nh" cx="${X+12}" cy="${step%2===0?y-5:y}" r="2"/>`;
+    }
+    if(it.label!==undefined)g+=`<text class="lb" x="${X}" y="143">${esc(it.label)}</text>`;
+    if(it.hit)g+=`<rect x="${X-gap/2}" y="24" width="${gap}" height="${H-4}" fill="transparent"/>`;
+    s+=`<g class="it ${it.cls||''}" ${it.attrs||''}>${g}</g>`;
+    if(it.barAfter)s+=`<line class="st it" x1="${X+gap/2}" x2="${X+gap/2}" y1="60" y2="100"/>`;
+  });
+  return `<svg class="staff" viewBox="0 22 ${W} ${H}" role="img" aria-label="${esc(o.alt||'Portée')}">${s}</svg>`;
+}
+const notesFig=(clef,ds,extra)=>staff(Object.assign({clef,items:ds.map(d=>({d,label:nameOf(d)}))},extra||{}));
+const rhyFig=(toks,labels,extra)=>staff(Object.assign({clef:null,items:R(toks).map((it,i)=>labels?Object.assign(it,{label:labels[i]}):it)},extra||{}))+`<button class="mini" data-act="play-r" data-r="${toks.join(',')}">Écouter</button>`;
+const posName=step=>{
+  if(step<0)return 'sous la portée'; if(step>8)return 'au-dessus de la portée';
+  const o=['1re','2e','3e','4e','5e'];
+  return step%2===0?`${o[step/2]} ligne`:`${o[(step-1)/2]} interligne`;
+};
+const median=a=>{const s=a.slice().sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
+const ordinal=i=>i===1?'1re':i+'e';
+
+/* ---------- clavier ---------- */
+function kbRange(min,max,extra){ let lo=min; while(![0,3].includes(mod(lo,7)))lo--; return [lo,Math.max(max+(extra||0),lo+7)]; }
+function kbd(o){
+  const n=o.hi-o.lo+1, mark=o.mark||{}, live=!!o.live, tag=live?'button':'div';
+  let h=`<div class="kbd${live||o.big?'':' static'}">`;
+  for(let d=o.lo;d<=o.hi;d++){
+    const s=semis(d), lab=(o.labels==='all'||(o.labels==='do'&&mod(d,7)===0))?nameOf(d):'';
+    h+=`<${tag} class="wk ${d===o.hi?'last ':''}${mark[s]||''}" ${live?`data-act="${o.act||'key'}" data-s="${s}" aria-label="${nameOf(d)}"`:''}>${d===0?'<i></i>':''}<span>${lab}</span></${tag}>`;
+  }
+  for(let d=o.lo;d<o.hi;d++){
+    if(![0,1,3,4,5].includes(mod(d,7)))continue;
+    const s=semis(d)+1, i=d-o.lo;
+    h+=`<${tag} class="bk ${mark[s]||''}" style="left:${((i+1)*100-30)/n}%;width:${60/n}%" ${live?`data-act="${o.act||'key'}" data-s="${s}" aria-label="${nameOf(d)} dièse"`:''}></${tag}>`;
+  }
+  return h+'</div>';
+}
+const kfig=(lo,hi,ds,labels)=>{const mark={};(ds||[]).forEach(d=>{mark[typeof d==='number'?semis(d):d.s]='hl';});return kbd({lo,hi,labels:labels||'all',mark});};
+
+/* ---------- générateurs de questions ---------- */
+const FIG={w:['ronde',4,'une'],h:['blanche',2,'une'],q:['noire',1,'une'],e:['croche',.5,'une'],s:['double croche',.25,'une'],'h.':['blanche pointée',3,'une'],'q.':['noire pointée',1.5,'une'],
+  wr:['pause',4,'une'],hr:['demi-pause',2,'une'],qr:['soupir',1,'un'],er:['demi-soupir',.5,'un']};
+const BEATLB={0.25:'¼ de temps',0.5:'½ temps',1:'1 temps',1.5:'1 temps ½',2:'2 temps',3:'3 temps',4:'4 temps'};
+const TAPS=[[['q','q','q','q'],['h','q','q'],['q','q','h'],['h','h'],['q','h','q'],['w']],
+  [['q','e','e','q','q'],['e','e','q','e','e','q'],['q','q','e','e','q'],['e','e','e','e','h'],['h','e','e','q'],['q','e','e','h'],['e','e','q','h']],
+  [['q','qr','q','q'],['q','q','qr','q'],['h','qr','q'],['q','qr','e','e','q']],
+  [['h.','q'],['q.','e','q','q'],['q','h.'],['q.','e','h']]];
+const RBANK=[].concat(...TAPS).filter(p=>p.length>1);
+const INTERV=['Seconde','Tierce','Quarte','Quinte','Sixte','Septième','Octave'];
+const KEYS={'#':['Do','Sol','Ré','La','Mi','Si','Fa dièse'],'b':['Do','Fa','Si bémol','Mi bémol','La bémol','Ré bémol','Sol bémol']};
+const listOu=a=>a.length>1?a.slice(0,-1).join(', ')+' ou '+a[a.length-1]:a[0];
+
+function withChoices(correct,others,max){
+  const set=shuffle([...new Set(others.filter(x=>x!==correct))]).slice(0,(max||4)-1);
+  const ch=shuffle([correct,...set]); return {choices:ch,a:ch.indexOf(correct)};
+}
+function melody(pool,len,steps){
+  const lo=Math.min(...pool),hi=Math.max(...pool); let d=pool.includes(0)&&steps.start0?0:pick(pool); const out=[d];
+  while(out.length<len){ let nx,guard=0; do{nx=d+pick(steps.moves);guard++;}while((nx<lo||nx>hi||nx===d)&&guard<40); if(nx<lo||nx>hi)nx=d>lo?d-1:d+1; d=nx; out.push(d); }
+  return out;
+}
+function makeQ(spec){
+  switch(spec.type){
+  case 'mix':{ const bag=[]; spec.parts.forEach(p=>{for(let i=0;i<(p.w||1);i++)bag.push(p);}); return makeQ(pick(bag)); }
+  case 'qcm':{
+    if(!spec._bag||!spec._bag.length)spec._bag=shuffle(spec.qs);
+    const it=spec._bag.pop(), c=withChoices(it[1],it.slice(2),4);
+    return {q:it[0],choices:c.choices,a:c.a,cols:1,why:`La bonne réponse : ${it[1]}.`,rk:{type:'qcm',qs:[it]}};
+  }
+  case 'notes':{
+    let d; do{d=pick(spec.pool);}while(spec.pool.length>1&&d===spec._last); spec._last=d;
+    const clef=spec.clef||'sol', step=d-(clef==='fa'?-10:2), kb=spec.kb||[Math.min(...spec.pool),Math.max(...spec.pool)], r=kbRange(kb[0],kb[1]);
+    const base={fig:staff({clef,center:true,items:[{d}],alt:'Une note sur la portée'}),why:`C'est un ${nameOf(d)} (${posName(step)}).`,rk:{type:'notes',clef,pool:[d],kb}};
+    if(spec.input==='name'||(spec.input!=='kbd'&&Math.random()<0.3))
+      return Object.assign(base,{q:'Quelle est cette note ?',choices:NAMES,a:mod(d,7),cols:4,after:()=>playSeq([freq(d)],0,0.9)});
+    return Object.assign(base,{q:'Jouez cette note sur le clavier.',kbd:{lo:r[0],hi:r[1],labels:spec.labels||'do'},target:semis(d)});
+  }
+  case 'touche':{
+    const lo=spec.lo,hi=spec.hi; let d=spec.d,acc=spec.acc||0;
+    if(d===undefined){ d=lo+rnd(hi-lo); if(spec.black&&Math.random()<0.75){ do{d=lo+rnd(hi-lo+1);acc=Math.random()<0.5?1:-1;}while((acc===1&&([2,6].includes(mod(d,7))||d===hi))||(acc===-1&&([0,3].includes(mod(d,7))||d===lo))); } }
+    const nm=nameOf(d)+(acc===1?' dièse':acc===-1?' bémol':'');
+    return {q:`Touchez ${acc?'':'un '}${nm}.`,kbd:{lo,hi,labels:'none'},target:semis(d)+acc,targetMod:true,
+      why:acc?`${nm} : la touche noire juste à ${acc===1?'droite':'gauche'} du ${nameOf(d)}.`:`Le ${nm} est indiqué en vert.`,rk:{type:'touche',lo,hi,d,acc}};
+  }
+  case 'melo':{
+    const clef=spec.clef||'sol', seq=melody(spec.pool,spec.len||3,{moves:[-2,-1,1,2]}), r=kbRange(Math.min(...spec.pool),Math.max(...spec.pool));
+    return {q:'Jouez ces notes dans l\'ordre.',fig:staff({clef,center:true,gap:46,items:seq.map(d=>({d})),alt:'Une courte mélodie'}),kbd:{lo:r[0],hi:r[1],labels:spec.labels||'do'},seq:seq.map(semis),seqNames:seq.map(nameOf)};
+  }
+  case 'dictee':{
+    const seq=melody(range(0,spec.max||4),spec.len||3,{moves:spec.moves||[-1,1],start0:true});
+    return {q:`Rejouez les ${seq.length} notes entendues. La première est un Do.`,play:()=>playSeq(seq.map(d=>freq(d)),0.62,0.6),kbd:{lo:0,hi:7,labels:'all'},seq:seq.map(semis),seqNames:seq.map(nameOf)};
+  }
+  case 'duree':{
+    const tok=pick(spec.pool), f=FIG[tok], it=T(tok), fig=staff({clef:null,center:true,items:[it],alt:'Une figure de rythme'}), rk={type:'duree',pool:[tok]};
+    if(Math.random()<0.5){
+      const c=withChoices(BEATLB[f[1]],Object.values(BEATLB),4);
+      return {q:it.rest?'Combien de temps dure ce silence ?':'Combien de temps dure cette note ?',fig,choices:c.choices,a:c.a,cols:2,why:`C'est ${f[2]} ${f[0]} : ${BEATLB[f[1]]}.`,rk};
+    }
+    const c=withChoices(f[0],spec.pool.map(t=>FIG[t][0]).concat(['noire','blanche','croche','ronde']),4);
+    return {q:'Comment s\'appelle cette figure ?',fig,choices:c.choices.map(x=>x[0].toUpperCase()+x.slice(1)),a:c.a,cols:2,why:`C'est ${f[2]} ${f[0]} (${BEATLB[f[1]]}).`,rk};
+  }
+  case 'mesure':{
+    const miss=pick([.5,1,1,2,2,3]), B=(miss<=2&&Math.random()<0.4)?3:4; let Rm=B-miss; const toks=[];
+    while(Rm>=1){ const opts=['q','q','ee']; if(Rm>=2)opts.push('h','h'); const t=pick(opts);
+      if(t==='ee'){toks.push('e','e');Rm-=1;} else {toks.push(t);Rm-=BEATS[t];} }
+    if(Rm>0)toks.push('e');
+    const items=R(toks); items.push({txt:'?'});
+    const lb={0.5:'Croche',1:'Noire',2:'Blanche',3:'Blanche pointée'}, ch=Object.values(lb);
+    return {q:'Quelle note complète la mesure ?',fig:staff({clef:null,time:[B,4],items,gap:40,alt:`Mesure à ${B} temps incomplète`}),choices:ch,a:ch.indexOf(lb[miss]),cols:2,
+      why:`La mesure compte ${B} temps ; il en manquait ${miss===0.5?'un demi':miss}.`};
+  }
+  case 'tap':{
+    const toks=pick([].concat(...TAPS.slice(0,spec.level||1)));
+    return {q:'Tapez ce rythme avec le métronome.',fig:staff({clef:null,time:[4,4],items:R(toks),gap:44,alt:'Rythme à taper'}),tap:{toks}};
+  }
+  case 'rythme':{
+    const three=shuffle(RBANK).slice(0,3), a=rnd(3);
+    return {q:'Quel rythme entendez-vous ?',note:'Quatre clics de départ, puis le rythme.',play:()=>playRhythm(three[a]),
+      choices:three.map(p=>({html:staff({clef:null,time:[4,4],items:R(p),w:300,gap:40,alt:'Rythme proposé'})})),a,cols:1,why:'La bonne écriture est encadrée en vert.'};
+  }
+  case 'haut':{
+    const d1=rnd(6)+3, gap=(spec.min||1)+rnd(3), d2=d1+(Math.random()<0.5?gap:-gap);
+    return {q:'La deuxième note est-elle plus aiguë ou plus grave ?',play:()=>playSeq([freq(d1),freq(d2)],0.75,0.7),choices:['Plus aiguë','Plus grave'],a:d2>d1?0:1,cols:2,why:'Réécoutez en chantant les deux notes.'};
+  }
+  case 'oreille':{
+    const d=spec.d!==undefined?spec.d:pick(spec.pool), names=spec.pool.length>5?'une note entre Do et Do aigu':listOu(spec.pool.map(nameOf));
+    return {q:`Vous entendez Do, puis une autre note : ${names}. Jouez-la.`,play:()=>playSeq([freq(0),freq(d)],0.9,0.8),kbd:{lo:0,hi:7,labels:'all'},target:semis(d),
+      why:`C'était ${d===7?'le Do aigu':nameOf(d)}.`,rk:{type:'oreille',pool:spec.pool,d}};
+  }
+  case 'intervO':{
+    const sizes=[2,3,5,8], size=pick(sizes), root=rnd(3), ch=sizes.map(s=>INTERV[s-2]);
+    return {q:'Quel intervalle entendez-vous ?',note:'Deux notes, l\'une après l\'autre.',play:()=>playSeq([freq(root),freq(root+size-1)],0.8,0.8),choices:ch,a:sizes.indexOf(size),cols:2,
+      why:`C'était une ${INTERV[size-2].toLowerCase()}. Seconde : deux notes voisines. Octave : la même note, plus haut.`};
+  }
+  case 'intervK':{
+    const size=spec.size||rnd(7)+2, root=spec.root!==undefined?spec.root:rnd(5), d2=root+size-1, nm=INTERV[size-2].toLowerCase();
+    return {q:`Jouez une ${nm} au-dessus de ${nameOf(root)}, la touche en jaune.`,kbd:{lo:0,hi:11,labels:'do'},premark:{[semis(root)]:'hl'},target:semis(d2),rk:{type:'intervK',size,root},
+      why:`On compte ${size} noms de notes en partant de ${nameOf(root)} : ${range(root,d2).map(nameOf).join(', ')}. La ${nm} est ${nameOf(d2)}.`,
+      onOk:()=>{const t=now()+0.5;tone(freq(root),t,0.6);tone(freq(d2),t+0.5,0.8);}};
+  }
+  case 'accordK':{
+    const root=spec.root!==undefined?spec.root:rnd(6), white=[0,3,4].includes(root), maj=spec.maj!==undefined?spec.maj:(spec.easy?white:Math.random()<0.5);
+    const r=semis(root), seq=[r,r+(maj?4:3),r+7], WN={0:'Do',2:'Ré',4:'Mi',5:'Fa',7:'Sol',9:'La',11:'Si'};
+    const nm=x=>{const pc=mod(x,12); return WN[pc]||(maj?WN[pc-1]+' dièse':WN[pc+1]+' bémol');};
+    return {q:`Jouez l'accord de ${nameOf(root)} ${maj?'majeur':'mineur'}, de la note la plus grave à la plus aiguë.`,kbd:{lo:0,hi:9,labels:'do'},seq,seqNames:seq.map(nm),rk:{type:'accordK',root,maj},
+      why:`${nameOf(root)} ${maj?'majeur':'mineur'} : ${seq.map(nm).join(', ')}.`,
+      onOk:()=>{const t=now()+0.45;seq.forEach(x=>tone(fS(x),t,1.3,0.14));}};
+  }
+  case 'accord':{
+    const root=rnd(6), maj=Math.random()<0.5, ss=[root,root+(maj?4:3),root+7].map(fS);
+    return {q:'Cet accord est-il majeur ou mineur ?',play:()=>{const t=now();ss.forEach((f,i)=>tone(f,t+i*0.32,0.5));ss.forEach(f=>tone(f,t+1.15,1.4,0.14));},choices:['Majeur','Mineur'],a:maj?0:1,cols:2,
+      why:maj?'Majeur : couleur claire, lumineuse.':'Mineur : couleur plus sombre.'};
+  }
+  case 'alter':{
+    let d=spec.d,acc=spec.acc;
+    if(d===undefined){ do{d=rnd(10)+1;acc=Math.random()<0.5?1:-1;}while((acc===1&&[2,6].includes(mod(d,7)))||(acc===-1&&[0,3].includes(mod(d,7)))); }
+    const L=nameOf(d), L2=nameOf(d+1), w=a=>a===1?'dièse':'bémol', good=`${L} ${w(acc)}`;
+    const base={fig:staff({center:true,items:[{d,acc}],alt:'Une note altérée'}),rk:{type:'alter',d,acc}};
+    if(Math.random()<0.6)return Object.assign(base,{q:'Jouez cette note sur le clavier.',kbd:{lo:0,hi:11,labels:'do'},target:semis(d)+acc,
+      why:`${good} : la touche noire juste à ${acc===1?'droite':'gauche'} du ${L}.`});
+    const ch=shuffle([good,`${L} ${w(-acc)}`,`${L2} ${w(acc)}`,`${L2} ${w(-acc)}`]);
+    return Object.assign(base,{q:'Quelle est cette note ?',choices:ch,a:ch.indexOf(good),cols:2,why:`${good} : le ${L} est ${acc===1?'haussé':'abaissé'} d'un demi-ton.`,after:()=>playSeq([freq(d,acc)],0,0.9)});
+  }
+  case 'armure':{
+    const t=spec.kind==='both'?pick(['#','b']):spec.kind, n=spec.n||rnd(5)+1, good=KEYS[t][n]+' majeur';
+    const c=withChoices(good,KEYS[t].slice(1).map(k=>k+' majeur'),4);
+    return {q:'Quelle tonalité majeure correspond à cette armure ?',fig:staff({key:{t,n},alt:`Armure à ${n} ${t==='#'?'dièses':'bémols'}`}),choices:c.choices,a:c.a,cols:2,rk:{type:'armure',kind:t,n},
+      why:t==='#'?`${n} dièse${n>1?'s':''} : on monte d'un demi-ton après le dernier dièse, soit ${good}.`:(n===1?'Un seul bémol : Fa majeur, à retenir par cœur.':`${n} bémols : l'avant-dernier bémol donne le nom, soit ${good}.`)};
+  }
+  case 'interv':{
+    const size=spec.size||rnd(7)+2, d1=rnd(12-size+1), d2=d1+size-1;
+    return {q:'Quel est cet intervalle ?',fig:staff({center:true,items:[{d:d1},{d:d2}],alt:'Deux notes sur la portée'}),choices:INTERV,a:size-2,cols:2,rk:{type:'interv',size},
+      why:`De ${nameOf(d1)} à ${nameOf(d2)}, on compte ${size} noms de notes : ${INTERV[size-2].toLowerCase()}.`,after:()=>playSeq([freq(d1),freq(d2)],0.6,0.8)};
+  }
+  }
+}
+
+/* ---------- oreille : progression quotidienne ---------- */
+const O=pool=>({type:'oreille',pool});
+const DI=(len,max,moves,w)=>({type:'dictee',len,max,moves,w});
+function earSpec(d){
+  if(d<=2)return {type:'haut',min:3};
+  if(d<=4)return {type:'haut',min:1};
+  if(d<=6)return O([0,4]);
+  if(d<=9)return O([0,2,4]);
+  if(d<=10)return O([0,1,2,3,4]);
+  if(d<=13)return {type:'mix',parts:[Object.assign(O([0,1,2,3,4]),{w:2}),{type:'rythme'}]};
+  if(d<=17)return {type:'mix',parts:[DI(3,4,[-1,1],2),{type:'rythme'}]};
+  if(d<=20)return {type:'mix',parts:[O(range(0,7)),DI(3,4,[-2,-1,1,2])]};
+  if(d<=23)return {type:'mix',parts:[DI(4,4,[-2,-1,1,2],2),{type:'rythme'}]};
+  if(d===24)return {type:'mix',parts:[{type:'intervO'},DI(4,4,[-2,-1,1,2])]};
+  if(d<=26)return {type:'mix',parts:[{type:'intervO'},{type:'accord'},DI(4,7,[-2,-1,1,2])]};
+  return {type:'mix',parts:[DI(4,7,[-2,-1,1,2],2),{type:'accord'},{type:'intervO'},{type:'rythme'}]};
+}
+
+/* ---------- contenus : QCM ---------- */
+const Q={
+portee:[['Combien de lignes compte une portée ?','5','4','6'],['Combien d\'interlignes compte une portée ?','4','5','3'],['Dans quel sens compte-t-on les lignes ?','De bas en haut','De haut en bas','De gauche à droite'],
+ ['Plus une note est placée haut sur la portée…','plus elle est aiguë','plus elle est grave','plus elle est longue'],['Combien y a-t-il de noms de notes ?','7','5','8','12'],['Quelle note vient après Si ?','Do','La','Ré'],
+ ['Au piano, où se trouve le Do ?','À gauche du groupe de deux touches noires','À gauche du groupe de trois touches noires','Entre deux touches noires'],['Au piano, les sons aigus sont…','à droite','à gauche','au milieu'],
+ ['Sur quelle ligne la clé de sol place-t-elle le Sol ?','La 2e ligne','La 1re ligne','La 3e ligne']],
+tempo:[['Que signifie « piano » (p) ?','Doux','Fort','Lent'],['Que signifie « forte » (f) ?','Fort','Doux','Rapide'],['Que signifie « Allegro » ?','Rapide et vif','Lent','Très doux'],['Que signifie « Adagio » ?','Lent','Rapide','Fort'],
+ ['Que demande un crescendo ?','Jouer de plus en plus fort','Jouer de plus en plus doux','Jouer de plus en plus vite'],['Que demande un diminuendo ?','Jouer de plus en plus doux','Jouer de plus en plus fort','Ralentir'],
+ ['« Noire = 60 » veut dire…','60 noires par minute, une par seconde','60 mesures par minute','60 notes dans le morceau'],['Que signifie « mf » (mezzo forte) ?','Moyennement fort','Très fort','Très doux'],
+ ['Que signifie « Moderato » ?','Modéré','Très rapide','Très lent'],['Que signifie « pp » (pianissimo) ?','Très doux','Très fort','Très lent'],['Quel outil bat la pulsation ?','Le métronome','Le diapason','L\'accordeur'],['Que signifie « ff » ?','Très fort','Très doux','Très rapide']],
+tons:[['Entre Mi et Fa, il y a…','un demi-ton','un ton'],['Entre Si et Do, il y a…','un demi-ton','un ton'],['Entre Do et Ré, il y a…','un ton','un demi-ton'],['Entre Fa et Sol, il y a…','un ton','un demi-ton'],['Entre La et Si, il y a…','un ton','un demi-ton'],
+ ['Combien de demi-tons dans un ton ?','2','1','3'],['Combien de demi-tons dans une octave ?','12','7','8'],['Entre quelles notes n\'y a-t-il pas de touche noire ?','Mi–Fa et Si–Do','Do–Ré et Fa–Sol','Sol–La et La–Si'],
+ ['Entre Sol et La, il y a…','un ton','un demi-ton'],['Deux touches voisines, noires comprises, sont séparées par…','un demi-ton','un ton','une tierce']],
+gamme:[['Quelle est la suite d\'intervalles de la gamme majeure ?','Ton, ton, ½, ton, ton, ton, ½','Ton, ½, ton, ton, ½, ton, ton','Ton, ton, ton, ½, ton, ton, ½'],['Où sont les demi-tons dans la gamme majeure ?','Entre les degrés 3–4 et 7–8','Entre les degrés 2–3 et 6–7','Entre les degrés 1–2 et 5–6'],
+ ['Comment s\'appelle le 1er degré d\'une gamme ?','La tonique','La dominante','La sensible'],['Comment s\'appelle le 5e degré ?','La dominante','La tonique','La sensible'],['Comment s\'appelle le 7e degré ?','La sensible','La dominante','La médiante'],
+ ['Dans la gamme de Do majeur, la dominante est…','Sol','Fa','La'],['Dans la gamme de Do majeur, la sensible est…','Si','La','Ré'],['Quelle note est altérée dans la gamme de Sol majeur ?','Fa dièse','Do dièse','Si bémol'],
+ ['Quelle note est altérée dans la gamme de Fa majeur ?','Si bémol','Fa dièse','Mi bémol'],['Combien de touches noires dans la gamme de Do majeur ?','Aucune','Une','Deux']],
+accords:[['Combien de notes dans un accord parfait ?','3','2','4'],['Quelles notes forment l\'accord de Do majeur ?','Do – Mi – Sol','Do – Ré – Mi','Do – Fa – La'],['Quelles notes forment l\'accord de Do mineur ?','Do – Mi bémol – Sol','Do – Mi – Sol dièse','Do – Ré – Sol'],
+ ['Quelle note distingue un accord majeur d\'un accord mineur ?','La tierce','La quinte','La fondamentale'],['Quelles notes forment l\'accord de Sol majeur ?','Sol – Si – Ré','Sol – La – Si','Sol – Do – Mi'],['Quelles notes forment l\'accord de La mineur ?','La – Do – Mi','La – Do dièse – Mi','La – Si – Do'],
+ ['Quelles notes forment l\'accord de Fa majeur ?','Fa – La – Do','Fa – Sol – La','Fa – Si – Ré'],['Avec quels doigts de la main droite joue-t-on Do – Mi – Sol ?','1, 3 et 5','1, 2 et 3','2, 3 et 4']],
+mineur:[['Quelle est la relative mineure de Do majeur ?','La mineur','Mi mineur','Ré mineur'],['Où se trouve la relative mineure ?','Une tierce mineure sous la tonique majeure','Une quinte au-dessus','Un ton au-dessous'],['Do majeur et La mineur ont…','la même armure','la même tonique','le même tempo'],
+ ['Quelle est la relative mineure de Sol majeur ?','Mi mineur','La mineur','Si mineur'],['Quelle est la relative mineure de Fa majeur ?','Ré mineur','La mineur','Sol mineur'],['Quelle est la relative mineure de Ré majeur ?','Si mineur','Mi mineur','Fa dièse mineur'],
+ ['Comment décrit-on souvent le mode mineur ?','Plus sombre, mélancolique','Plus clair, joyeux','Plus rapide'],['En mineur harmonique, quel degré est haussé ?','Le 7e','Le 3e','Le 5e'],['Quelle altération trouve-t-on en La mineur harmonique ?','Sol dièse','Fa dièse','Si bémol'],['Une armure vide indique…','Do majeur ou La mineur','Sol majeur ou Mi mineur','Fa majeur ou Ré mineur']],
+signes:[['Que demande un point d\'orgue ?','Tenir la note plus longtemps','Jouer plus fort','Répéter la mesure'],['Que demandent les barres de reprise ?','Rejouer le passage','Arrêter le morceau','Changer de clé'],['Que signifie « D.C. » (Da capo) ?','Reprendre depuis le début','Aller à la fin','Jouer doucement'],
+ ['Un point au-dessus ou au-dessous d\'une note (staccato) demande…','une note courte, détachée','une note plus longue','une note plus forte'],['Une liaison entre deux notes différentes (legato) demande…','de les enchaîner sans coupure','de les détacher','de les jouer ensemble'],
+ ['Une liaison entre deux notes identiques…','additionne leurs durées','double la vitesse','annule la seconde'],['Que signifie « Fine » ?','La fin du morceau','Jouer finement','Très doux'],['Que demande un accent (>) ?','Appuyer la note','Raccourcir la note','Ralentir'],
+ ['Que signifie « rit. » (ritardando) ?','Ralentir progressivement','Accélérer','Répéter'],['Que signifie « a tempo » ?','Revenir au tempo initial','Jouer plus vite','Faire une pause'],['Que signifie « 8va » ?','Jouer une octave plus haut','Jouer huit fois','Compter huit temps'],
+ ['Au piano, à quoi sert la pédale de droite ?','À laisser résonner les notes','À jouer plus doux','À changer de clé']]
+};
+
+/* ---------- le programme ---------- */
+const SOL=range(0,12), FA=range(-10,0), FA1=range(-7,0);
+const DUR1=['w','h','q'], DUR2=['w','h','q','e','s'], SIL=['wr','hr','qr','er'], DUR3=['h.','q.','w','h','q','e'];
+const two=(a,b)=>`<figure>${a}${b}</figure>`;
+const DAYS=[
+{t:'La portée, la clé de sol et le clavier',ex:{type:'mix',parts:[{type:'qcm',qs:Q.portee},{type:'touche',lo:0,hi:7,w:2}]},l:()=>`
+<p>La musique s'écrit sur une <b>portée</b> : cinq lignes et quatre interlignes, comptés de bas en haut. Plus une note est haute, plus elle est aiguë.</p>
+<figure>${staff({alt:'Portée avec clé de sol'})}<figcaption>La portée, avec la clé de sol au début : c'est la clé de la main droite.</figcaption></figure>
+<p>Il n'existe que sept noms de notes, qui se répètent : Do, Ré, Mi, Fa, Sol, La, Si, puis de nouveau Do. Au piano, ce sont les touches blanches.</p>
+<figure>${kfig(0,7)}<figcaption>Le point doré marque le Do du milieu, votre repère pendant tout le programme.</figcaption></figure>
+<p class="tip">Les touches noires vont par groupes de deux et de trois. Le Do est toujours la blanche juste à gauche d'un groupe de deux.</p>`},
+{t:'Do, Ré, Mi',ex:{type:'notes',pool:[0,1,2],kb:[0,7],labels:'all'},l:()=>`
+<p>Le Do du milieu s'écrit sous la portée, sur une petite ligne rien que pour lui. Le Ré se colle sous la 1re ligne. Le Mi est posé sur la 1re ligne.</p>
+<figure>${notesFig('sol',[0,1,2],{center:true})}${kfig(0,7,[0,1,2])}<figcaption>Trois notes qui se suivent sur la portée, trois touches voisines sur le clavier.</figcaption></figure>
+<p>Main droite : le pouce (doigt 1) sur Do, l'index (2) sur Ré, le majeur (3) sur Mi.</p>
+<p class="tip">Dans l'exercice, vous répondez le plus souvent en touchant la bonne touche. C'est le geste du pianiste : voir une note, trouver sa touche.</p>`},
+{t:'Fa et Sol : la position de Do',ex:{type:'mix',parts:[{type:'notes',pool:range(0,4),kb:[0,7],labels:'all',w:2},{type:'melo',pool:range(0,4),len:3,labels:'all'}]},l:()=>`
+<p>On continue de monter : Fa dans le 1er interligne, Sol sur la 2e ligne. La clé de sol s'enroule justement autour de cette ligne.</p>
+<figure>${notesFig('sol',range(0,4),{center:true})}${kfig(0,7,range(0,4))}<figcaption>Do, Ré, Mi, Fa, Sol : une note par doigt.</figcaption></figure>
+<p>C'est la <b>position de Do</b>, la première que l'on apprend au piano : les cinq doigts de la main droite posés sur cinq touches voisines, du pouce (1) sur Do au petit doigt (5) sur Sol.</p>
+<p>Nouveau : on vous demandera aussi de jouer plusieurs notes à la suite, comme une petite mélodie.</p>`},
+{t:'La, Si, Do',ex:{type:'mix',parts:[{type:'notes',pool:range(0,7),w:3},{type:'melo',pool:range(0,7),len:3}]},l:()=>`
+<p>La dans le 2e interligne, Si sur la 3e ligne, puis un nouveau Do dans le 3e interligne. Du Do du milieu à ce Do, il y a huit notes : une <b>octave</b>.</p>
+<figure>${notesFig('sol',range(0,7),{gap:34})}${kfig(0,7,range(0,7))}<figcaption>Les huit notes de Do à Do.</figcaption></figure>
+<p class="tip">Les notes alternent toujours ligne, interligne, ligne. Deux notes qui se touchent sur la portée sont deux touches voisines.</p>
+<p>À partir d'aujourd'hui, le clavier n'affiche plus que les Do. À vous de retrouver les autres.</p>`},
+{t:'Les notes aiguës',ex:{type:'mix',parts:[{type:'notes',pool:range(5,12),w:3},{type:'melo',pool:range(4,9),len:3}]},l:()=>`
+<p>Au-dessus du Do aigu, on recommence : Ré, Mi, Fa, Sol, La, de plus en plus à droite sur le clavier.</p>
+<figure>${notesFig('sol',range(7,12),{center:true})}${kfig(3,12,range(7,12))}<figcaption>Do (3e interligne), Ré (4e ligne), Mi, Fa (5e ligne), Sol, puis La sur une ligne supplémentaire.</figcaption></figure>
+<p>À partir de la 3e ligne, la hampe (le trait de la note) descend au lieu de monter. C'est seulement pour la lisibilité : la note ne change pas.</p>`},
+{t:'Toute la clé de sol',ex:{type:'mix',parts:[{type:'notes',pool:SOL,w:3},{type:'melo',pool:range(2,10),len:3}]},n:12,l:()=>`
+<p>Deux listes à savoir par cœur suffisent pour lire vite.</p>
+<figure>${notesFig('sol',[2,4,6,8,10],{center:true})}<figcaption>Les lignes, de bas en haut : Mi, Sol, Si, Ré, Fa.</figcaption></figure>
+<figure>${notesFig('sol',[3,5,7,9],{center:true})}<figcaption>Les interlignes : Fa, La, Do, Mi.</figcaption></figure>
+<p class="tip">Récitez-les à voix haute chaque jour cette semaine. L'échauffement vous reposera automatiquement les notes que vous ratez.</p>`},
+{t:'Bilan : lire et jouer',ex:{type:'mix',parts:[{type:'notes',pool:SOL,w:2},{type:'melo',pool:range(0,7),len:4,w:2},{type:'touche',lo:0,hi:7}]},n:12,l:()=>`
+<p>Pour déchiffrer une mélodie, les pianistes ne lisent pas chaque note séparément. Ils repèrent la première, puis suivent le dessin.</p>
+<ul><li>La note suivante monte ou descend ?</li><li>D'un cran (touche voisine) ou d'un saut (on enjambe une touche) ?</li></ul>
+<figure>${staff({center:true,gap:46,items:[0,1,2,4].map(d=>({d,label:nameOf(d)})),alt:'Do Ré Mi Sol'})}<figcaption>Do, un cran, un cran, puis un saut par-dessus Fa.</figcaption></figure>
+<p>Le bilan d'aujourd'hui mélange lecture, mélodies à jouer et repérage des touches.</p>`},
+{t:'La pulsation : ronde, blanche, noire',ex:{type:'mix',parts:[{type:'duree',pool:DUR1},{type:'tap',level:1}]},l:()=>`
+<p>La <b>pulsation</b> est le battement régulier de la musique, celui que l'on tape du pied. On l'appelle le <b>temps</b>. La forme d'une note indique combien de temps elle dure.</p>
+<figure>${rhyFig(['w','h','q'],['Ronde : 4','Blanche : 2','Noire : 1'],{center:true,gap:90})}<figcaption>Chaque figure vaut la moitié de la précédente.</figcaption></figure>
+<p>Nouveau : vous allez <b>taper des rythmes</b>. Le métronome donne quatre clics de départ, puis vous tapez sur l'écran pendant qu'il continue. Une frappe par note ; pour une blanche, vous tapez une fois et vous attendez deux temps.</p>
+<p class="tip">Comptez « 1, 2, 3, 4 » à voix haute avec le métronome. C'est l'habitude la plus utile au piano.</p>`},
+{t:'Croches et doubles croches',ex:{type:'mix',parts:[{type:'duree',pool:DUR2},{type:'tap',level:2}]},l:()=>`
+<p>On continue de diviser par deux. La <b>croche</b> vaut un demi-temps : il en faut deux pour une noire. La <b>double croche</b> vaut un quart de temps.</p>
+<figure>${rhyFig(['e','s'],['Croche : ½','Double : ¼'],{center:true,gap:110})}<figcaption>Un crochet pour la croche, deux pour la double croche.</figcaption></figure>
+<figure>${rhyFig(['e','e','e','e'],['1','et','2','et'],{center:true})}<figcaption>Quand elles se suivent, les croches sont reliées par une barre.</figcaption></figure>
+<p class="tip">Comptez « 1 et 2 et 3 et 4 et » : les chiffres tombent sur les clics, les « et » entre deux clics.</p>`},
+{t:'Les silences',ex:{type:'mix',parts:[{type:'duree',pool:SIL.concat(['q','h']),w:2},{type:'tap',level:3}]},l:()=>`
+<p>En musique, se taire s'écrit aussi. Chaque note a son silence de même durée.</p>
+<figure>${rhyFig(['wr','hr','qr','er'],['Pause','Demi-pause','Soupir','Demi-soupir'],{center:true,gap:74})}<figcaption>Pause : 4 temps. Demi-pause : 2. Soupir : 1. Demi-soupir : ½.</figcaption></figure>
+<p class="tip">La pause est accrochée sous la 4e ligne, la demi-pause est posée sur la 3e. La plus longue est celle qui « pend ».</p>
+<p>Quand vous tapez un rythme, un silence se compte dans la tête, sans frapper.</p>`},
+{t:'La mesure',ex:{type:'mix',parts:[{type:'mesure',w:2},{type:'tap',level:3}]},l:()=>`
+<p>Les temps sont regroupés en <b>mesures</b>, séparées par des barres verticales. Deux chiffres au début de la portée donnent la règle du jeu.</p>
+<figure>${staff({clef:null,time:[4,4],items:(()=>{const a=R(['q','q','h','h','e','e','q']);a[2].barAfter=true;return a;})(),gap:38,alt:'Deux mesures à quatre temps'})}<figcaption>Deux mesures à 4 temps. Chacune contient exactement 4 temps.</figcaption></figure>
+<ul><li>Le chiffre du haut : le nombre de temps par mesure.</li><li>Le chiffre du bas : la note qui vaut un temps (4 = la noire).</li></ul>
+<p>4/4 est la mesure la plus courante, 3/4 celle de la valse, 2/4 celle de la marche.</p>`},
+{t:'La clé de fa : la main gauche',ex:{type:'mix',parts:[{type:'notes',clef:'fa',pool:range(-4,0),labels:'all',w:3},{type:'melo',clef:'fa',pool:range(-4,0),len:3,labels:'all'}]},l:()=>`
+<p>Au piano, la main gauche joue les sons graves, écrits en <b>clé de fa</b>. Ses deux points encadrent la 4e ligne : c'est là que se trouve le Fa.</p>
+<figure>${notesFig('fa',[0,-1,-2,-3,-4],{center:true})}${kfig(-4,3,range(-4,0))}<figcaption>En descendant depuis le Do du milieu : Do, Si, La, Sol, Fa.</figcaption></figure>
+<p>Le Do du milieu est le même que celui de la main droite. En clé de fa, il s'écrit au-dessus de la portée, sur une ligne supplémentaire.</p>
+<p class="tip">Main gauche : le pouce (1) sur le Do du milieu, puis un doigt par touche en descendant, jusqu'au petit doigt (5) sur Fa.</p>`},
+{t:'La clé de fa : de Do à Do',ex:{type:'mix',parts:[{type:'notes',clef:'fa',pool:FA1,w:3},{type:'melo',clef:'fa',pool:FA1,len:3}]},l:()=>`
+<p>Descendons d'une octave entière sous le Do du milieu.</p>
+<figure>${notesFig('fa',FA1,{gap:34})}${kfig(-7,0,FA1)}<figcaption>De Do grave (2e interligne) au Do du milieu.</figcaption></figure>
+<p>Position de Do à la main gauche : le petit doigt (5) sur le Do grave, le pouce (1) sur Sol.</p>
+<p class="tip">Attention au piège : une note placée au même endroit n'a pas le même nom dans les deux clés. Regardez toujours la clé avant la note.</p>`},
+{t:'Le point et la liaison',ex:{type:'mix',parts:[{type:'duree',pool:DUR3},{type:'mesure'},{type:'tap',level:4}]},l:()=>`
+<p>Un <b>point</b> placé après une note lui ajoute la moitié de sa durée.</p>
+<figure>${rhyFig(['h.','q.'],['2 + 1 = 3 temps','1 + ½ = 1 temps ½'],{center:true,gap:148})}<figcaption>Blanche pointée et noire pointée.</figcaption></figure>
+<p>La <b>liaison</b> est une courbe qui relie deux notes de même hauteur : on ne joue que la première, et on la tient pendant la durée des deux.</p>
+<p class="tip">Noire pointée suivie d'une croche : comptez « 1 (et) 2 <b>et</b> », la croche tombe sur le « et » du 2.</p>`},
+{t:'Bilan : deux mains, deux clés',ex:{type:'mix',parts:[{type:'notes',pool:SOL,w:2},{type:'notes',clef:'fa',pool:FA1,w:2},{type:'melo',pool:range(0,7),len:4},{type:'duree',pool:DUR2.concat(SIL)},{type:'mesure'},{type:'tap',level:4,w:2}]},n:12,l:()=>`
+<p>Mi-parcours. Vous lisez la clé de sol, le début de la clé de fa, et vous savez taper un rythme en mesure : c'est déjà de quoi déchiffrer une mélodie simple au piano.</p>
+<p>Ce bilan mélange tout. Si une famille de questions vous résiste, repassez par l'entraînement libre avant de continuer.</p>`},
+{t:'Toute la clé de fa et la grande portée',ex:{type:'mix',parts:[{type:'notes',clef:'fa',pool:FA,w:3},{type:'notes',pool:SOL},{type:'melo',clef:'fa',pool:range(-10,-3),len:3}]},n:12,l:()=>`
+<figure>${notesFig('fa',[-10,-8,-6,-4,-2],{center:true})}<figcaption>Les lignes : Sol, Si, Ré, Fa, La.</figcaption></figure>
+<figure>${notesFig('fa',[-9,-7,-5,-3],{center:true})}<figcaption>Les interlignes : La, Do, Mi, Sol.</figcaption></figure>
+<p>Une partition de piano superpose deux portées reliées par une accolade : c'est la <b>grande portée</b>. En haut, la clé de sol pour la main droite. En bas, la clé de fa pour la main gauche. Le Do du milieu se trouve exactement entre les deux.</p>
+<figure>${staff({center:true,items:[{d:0,label:'Do'}],alt:'Do du milieu en clé de sol'})}${staff({clef:'fa',center:true,items:[{d:0,label:'Do'}],alt:'Do du milieu en clé de fa'})}<figcaption>La même touche, écrite pour chaque main.</figcaption></figure>`},
+{t:'Tons et demi-tons',ex:{type:'mix',parts:[{type:'qcm',qs:Q.tons,w:2},{type:'touche',lo:0,hi:7}]},l:()=>`
+<p>Le <b>demi-ton</b> est la plus petite distance entre deux notes : au piano, c'est la distance entre deux touches voisines, noires comprises. Un <b>ton</b> vaut deux demi-tons.</p>
+<figure>${kfig(0,7)}<figcaption>Pas de touche noire entre Mi et Fa, ni entre Si et Do.</figcaption></figure>
+<p>Entre deux touches blanches voisines, il y a un ton quand une noire les sépare, et seulement un demi-ton entre Mi–Fa et Si–Do.</p>`},
+{t:'Dièse, bémol, bécarre',ex:{type:'mix',parts:[{type:'alter',w:2},{type:'touche',lo:0,hi:7,black:true}]},l:()=>`
+<p>Les <b>altérations</b> modifient une note d'un demi-ton. Elles s'écrivent juste devant la note, à la même hauteur.</p>
+<figure>${staff({center:true,gap:80,items:[{d:3,acc:1,label:'Fa dièse'},{d:6,acc:-1,label:'Si bémol'},{d:6,acc:0,label:'Si bécarre'}],alt:'Trois notes altérées'})}${kfig(0,7,[{s:6},{s:10}])}<figcaption>Fa dièse : la noire à droite du Fa. Si bémol : la noire à gauche du Si.</figcaption></figure>
+<p>Le dièse monte à la touche immédiatement à droite, le bémol descend à la touche immédiatement à gauche, le bécarre annule. Une même touche noire porte donc deux noms : Fa dièse est aussi Sol bémol.</p>
+<p>Une altération reste valable jusqu'à la fin de la mesure.</p>`},
+{t:'La gamme de Do majeur',ex:{type:'mix',parts:[{type:'qcm',qs:Q.gamme,w:3},{type:'melo',pool:range(0,7),len:4}]},l:()=>`
+<p>Une <b>gamme</b> est une suite de huit notes, de la tonique à la même note une octave plus haut. La gamme majeure suit toujours le même chemin : ton, ton, demi-ton, ton, ton, ton, demi-ton.</p>
+<figure>${notesFig('sol',range(0,7),{gap:34})}<figcaption>Do majeur : uniquement des touches blanches.</figcaption></figure>
+<p>Chaque note a un rôle. Le 1er degré est la <b>tonique</b>, le 5e la <b>dominante</b>, le 7e la <b>sensible</b>, qui « veut » remonter vers la tonique.</p>
+<p>Pour garder ce chemin en partant de Sol, il faut un Fa dièse. En partant de Fa, un Si bémol.</p>`},
+{t:'L\'armure : les dièses',ex:{type:'armure',kind:'#'},l:()=>`
+<p>Plutôt que de répéter les altérations devant chaque note, on les écrit une fois pour toutes après la clé : c'est l'<b>armure</b>. Elle vaut pour tout le morceau. Les dièses arrivent toujours dans le même ordre.</p>
+<p class="tip">Fa, Do, Sol, Ré, La, Mi, Si.</p>
+<figure>${staff({key:{t:'#',n:2},alt:'Armure à deux dièses'})}<figcaption>Deux dièses : tous les Fa et tous les Do se jouent sur la touche noire.</figcaption></figure>
+<p>Pour trouver la tonalité majeure : prenez le dernier dièse et montez d'un demi-ton. Ici, Do dièse, donc Ré majeur.</p>`},
+{t:'L\'armure : les bémols',ex:{type:'mix',parts:[{type:'armure',kind:'b',w:2},{type:'armure',kind:'#'}]},l:()=>`
+<p>Les bémols suivent l'ordre inverse des dièses.</p>
+<p class="tip">Si, Mi, La, Ré, Sol, Do, Fa.</p>
+<figure>${staff({key:{t:'b',n:3},alt:'Armure à trois bémols'})}<figcaption>Trois bémols : Si, Mi, La.</figcaption></figure>
+<p>La tonalité majeure porte le nom de l'avant-dernier bémol. Ici, Mi bémol majeur. Seule exception à retenir : un seul bémol, c'est Fa majeur.</p>`},
+{t:'Tempo et nuances',ex:{type:'mix',parts:[{type:'qcm',qs:Q.tempo,w:3},{type:'tap',level:4}]},l:()=>`
+<p>Le <b>tempo</b> est la vitesse de la pulsation. On l'indique par un mot italien ou par un nombre de battements par minute.</p>
+<ul><li>Adagio : lent.</li><li>Moderato : modéré.</li><li>Allegro : rapide et vif.</li></ul>
+<p>Les <b>nuances</b> indiquent la force du son, du plus doux au plus fort : pp, p, mf, f, ff. Un crescendo augmente peu à peu, un diminuendo diminue.</p>
+<p class="tip">Au piano, la nuance se fait avec le poids du bras, pas en frappant plus vite.</p>`},
+{t:'Bilan : clavier, altérations, armures',ex:{type:'mix',parts:[{type:'notes',clef:'fa',pool:FA,w:2},{type:'notes',pool:SOL},{type:'alter',w:2},{type:'armure',kind:'both'},{type:'qcm',qs:Q.tons},{type:'melo',pool:range(0,7),len:4},{type:'tap',level:4}]},n:12,l:()=>`
+<p>Vous lisez les deux clés, vous trouvez les touches noires et vous savez nommer une tonalité à partir de son armure.</p>
+<p>La dernière semaine s'occupe de ce qui relie les notes entre elles, les intervalles et les accords, puis du jeu lui-même.</p>`},
+{t:'Les intervalles',ex:{type:'mix',parts:[{type:'intervK',w:3},{type:'interv',w:2}]},l:()=>`
+<p>Un <b>intervalle</b> est la distance entre deux notes. Pour le nommer, comptez les noms de notes, départ et arrivée compris.</p>
+<figure>${staff({center:true,gap:44,items:[{d:0,label:'Do'},{d:2,label:'Mi'},{txt:''},{d:0,label:'Do'},{d:4,label:'Sol'}],alt:'Tierce et quinte'})}<figcaption>Do–Mi : trois notes, une tierce. Do–Sol : cinq notes, une quinte.</figcaption></figure>
+<p>Seconde (2), tierce (3), quarte (4), quinte (5), sixte (6), septième (7), octave (8).</p>
+<p class="tip">Repère visuel : de ligne à ligne voisine, ou d'interligne à interligne voisin, c'est une tierce. Au clavier, on enjambe une touche blanche.</p>
+<p>Dans l'exercice, vous jouez les intervalles sur le clavier : une touche est en jaune, vous comptez les touches blanches à partir d'elle, elle comprise, et vous touchez l'arrivée.</p>
+<figure>${kfig(0,7,[0,2])}<figcaption>Une tierce au-dessus de Do : Do (1), Ré (2), Mi (3).</figcaption></figure>
+<p>Dès aujourd'hui, l'exercice d'oreille vous fait aussi reconnaître des intervalles.</p>`},
+{t:'Les accords majeurs et mineurs',ex:{type:'mix',parts:[{type:'accordK',easy:true,w:3},{type:'accordK',root:0,maj:false},{type:'accord',w:2},{type:'qcm',qs:Q.accords,w:2}]},l:()=>`
+<p>Un <b>accord</b> est un ensemble de notes jouées en même temps. L'accord parfait en compte trois, empilées de tierce en tierce : la fondamentale, la tierce et la quinte.</p>
+<figure>${staff({center:true,gap:60,items:[{d:0,label:'Do'},{d:2,label:'Mi'},{d:4,label:'Sol'}],alt:'Les notes de l\'accord de Do majeur'})}${kfig(0,7,[0,2,4])}<figcaption>Do majeur : Do, Mi, Sol. Une touche sur deux, doigts 1, 3 et 5.</figcaption></figure>
+<p>C'est la tierce qui donne la couleur. Avec Mi, l'accord est majeur, clair. Avec Mi bémol, il devient mineur, plus sombre.</p>
+<figure>${kfig(0,7,[0,{s:3},4])}<figcaption>Do mineur : Do, Mi bémol, Sol. Seule la note du milieu a changé.</figcaption></figure>
+<p>Pour construire un accord sur n'importe quelle touche, comptez les demi-tons, touches noires comprises. Majeur : 4 demi-tons, puis 3. Mineur : 3 demi-tons, puis 4.</p>
+<p class="tip">Sur les touches blanches seules, on obtient trois accords majeurs (Do, Fa, Sol) et trois mineurs (Ré, Mi, La).</p>
+<p>Dans l'exercice, vous jouez les trois notes de l'accord sur le clavier, de bas en haut, puis vous l'entendez sonner.</p>`},
+{t:'Le mode mineur',ex:{type:'mix',parts:[{type:'qcm',qs:Q.mineur,w:3},{type:'accordK',w:2},{type:'accord'}]},l:()=>`
+<p>Chaque gamme majeure a une sœur mineure, sa <b>relative</b>, qui utilise la même armure. On la trouve en descendant d'une tierce mineure (trois demi-tons) depuis la tonique.</p>
+<figure>${notesFig('sol',range(5,12),{gap:34})}<figcaption>La mineur : les mêmes touches que Do majeur, en partant de La.</figcaption></figure>
+<p>Do majeur et La mineur, Sol majeur et Mi mineur, Fa majeur et Ré mineur. En mineur harmonique, on hausse le 7e degré : en La mineur, le Sol devient Sol dièse.</p>`},
+{t:'Les signes de la partition',ex:{type:'qcm',qs:Q.signes},l:()=>`
+<p>Une partition contient aussi des indications de parcours et de jeu.</p>
+<ul><li><b>Barres de reprise</b> (double barre avec deux points) : on rejoue le passage.</li><li><b>D.C.</b> : on reprend du début. <b>Fine</b> : la fin.</li>
+<li><b>Point d'orgue</b> : on tient la note plus longtemps.</li><li><b>Staccato</b> (un point sur la note) : note courte, détachée. <b>Legato</b> (une courbe) : notes liées.</li>
+<li><b>rit.</b> : ralentir. <b>a tempo</b> : revenir à la vitesse de départ.</li><li><b>Ped.</b> : la pédale de droite, qui laisse résonner les notes.</li></ul>`},
+{t:'Lecture rapide dans les deux clés',ex:{type:'mix',parts:[{type:'notes',pool:SOL,w:2},{type:'notes',clef:'fa',pool:FA,w:2},{type:'melo',pool:range(0,9),len:4},{type:'melo',clef:'fa',pool:FA1,len:4}]},n:15,l:()=>`
+<p>La vraie difficulté n'est pas de connaître les notes, mais de les reconnaître vite, sans compter. Aujourd'hui, les deux clés sont mélangées : regardez toujours la clé avant la note.</p>
+<p class="tip">Visez la fluidité. Si vous hésitez plus de deux secondes, revenez aux listes des lignes et des interlignes.</p>`},
+{t:'Déchiffrer comme au piano',ex:{type:'mix',parts:[{type:'melo',pool:range(0,7),len:5,w:2},{type:'melo',clef:'fa',pool:FA1,len:4,w:2},{type:'tap',level:4,w:2}]},l:()=>`
+<p>Devant une partition nouvelle, procédez toujours en trois passes, lentement.</p>
+<ul><li><b>Le rythme d'abord</b> : tapez-le sur vos genoux en comptant les temps.</li><li><b>Les notes ensuite</b> : nommez-les à voix haute, sans rythme.</li><li><b>Les deux ensemble</b> : jouez très lentement, une main à la fois.</li></ul>
+<p>Aujourd'hui, vous enchaînez ces gestes : des mélodies de quatre ou cinq notes à jouer dans chaque clé, et des rythmes à taper.</p>
+<p class="tip">Jouer lentement et juste vaut mieux que vite avec des erreurs : les doigts mémorisent ce qu'ils répètent.</p>`},
+{t:'Examen final',ex:{type:'mix',parts:[{type:'notes',pool:SOL,w:2},{type:'notes',clef:'fa',pool:FA,w:2},{type:'melo',pool:range(0,7),len:4,w:2},{type:'duree',pool:DUR3.concat(SIL)},{type:'mesure'},{type:'tap',level:4,w:2},{type:'alter'},{type:'armure',kind:'both'},{type:'interv'},{type:'intervK'},{type:'accordK'},{type:'accord'},{type:'dictee',len:4,max:4,moves:[-2,-1,1,2]}]},n:20,l:()=>`
+<p>Vingt questions sur tout le programme : lecture, clavier, rythme, altérations, armures, intervalles, écoute.</p>
+<p>Et ensuite ? Vous avez les bases pour commencer le piano. Choisissez une méthode pour débutants ou un professeur, et gardez l'habitude prise ici : dix minutes par jour, rythme d'abord, notes ensuite, puis les deux ensemble, lentement.</p>`}
+];
+const WEEKS=[{t:'Les notes de la main droite',from:1,to:7,shape:[0,1,2,3,4,5,6]},{t:'Le rythme et la main gauche',from:8,to:15,shape:[4,5,6,7,6,5,4,3]},
+  {t:'Clavier et tonalités',from:16,to:23,shape:[7,6,5,4,3,2,1,2]},{t:'Intervalles, accords, jeu',from:24,to:30,shape:[2,4,6,8,6,4,7]}];
+const FREE=[['Lecture en clé de sol','Voir une note, trouver sa touche',{type:'notes',pool:SOL}],['Lecture en clé de fa','La main gauche',{type:'notes',clef:'fa',pool:FA}],
+  ['Jouer une mélodie','Quatre notes à lire et à jouer',{type:'mix',parts:[{type:'melo',pool:range(0,9),len:4},{type:'melo',clef:'fa',pool:FA1,len:4}]}],
+  ['Trouver les touches','Blanches et noires, sans portée',{type:'touche',lo:0,hi:7,black:true}],['Taper un rythme','Avec le métronome',{type:'tap',level:4}],
+  ['Dictée de notes','Rejouer une mélodie entendue',{type:'dictee',len:4,max:4,moves:[-2,-1,1,2]}],['Notes à l\'oreille','De Do à Do, à partir du Do',{type:'oreille',pool:range(0,7)}],
+  ['Rythme à l\'oreille','Retrouver l\'écriture d\'un rythme entendu',{type:'rythme'}],['Intervalles et accords à l\'oreille','Seconde, tierce, quinte, octave, majeur, mineur',{type:'mix',parts:[{type:'intervO'},{type:'accord'}]}],
+  ['Durées et mesures','Notes, silences, mesure à compléter',{type:'mix',parts:[{type:'duree',pool:Object.keys(FIG),w:2},{type:'mesure'}]}],['Altérations','Dièses et bémols sur le clavier',{type:'alter'}],
+  ['Armures','Trouver la tonalité majeure',{type:'armure',kind:'both'}],['Intervalles au clavier','Jouer une tierce, une quinte, une octave',{type:'mix',parts:[{type:'intervK',w:2},{type:'interv'}]}],['Accords au clavier','Construire un accord majeur ou mineur',{type:'accordK'}]];
+
+/* ---------- progression et erreurs à revoir ---------- */
+const STORE='solfege30v2';
+let P={done:{},err:{},best:{}}, cloudRef=null;
+try{const s=localStorage.getItem(STORE);if(s){const o=JSON.parse(s);if(o&&o.done){P=o;P.err=P.err||{};P.best=P.best||{};}}}catch(e){}
+function save(){
+  try{localStorage.setItem(STORE,JSON.stringify(P));}catch(e){}
+  if(cloudRef)cloudRef.set({done:P.done,err:P.err,best:P.best,t:Date.now()}).catch(()=>{});
+}
+async function initCloud(){
+  try{
+    if(!window.claude||!claude.use)return;
+    const [db,user]=await Promise.all([claude.use('db'),claude.use('user')]);
+    if(!db||!user)return; const id=await user.id(); if(!id)return;
+    cloudRef=db.collection('data/users/'+id).doc('progress2');
+    const snap=await cloudRef.get(); let changed=false, localExtra=false;
+    const data=snap.exists?snap.data():{}, remote=data.done||{};
+    for(const k in remote){if(!(k in P.done)||remote[k]>P.done[k]){P.done[k]=remote[k];changed=true;}}
+    for(const k in P.done){if(!(k in remote)||P.done[k]>remote[k])localExtra=true;}
+    if(!Object.keys(P.err).length&&data.err)P.err=data.err;
+    for(const k in (data.best||{})){if(!(P.best[k]>=data.best[k])){P.best[k]=data.best[k];}}
+    if(localExtra)save(); else {try{localStorage.setItem(STORE,JSON.stringify(P));}catch(e){}}
+    if(changed&&V.view==='home')render();
+  }catch(e){}
+}
+const passed=d=>(P.done['d'+d]||0)>=70;
+const nextDay=()=>{for(let d=1;d<=30;d++)if(!passed(d))return d;return 0;};
+function record(q,ok,fresh){
+  if(!q.rk)return; const k=JSON.stringify(q.rk);
+  if(!ok){ fresh[k]=1; delete P.err[k]; P.err[k]=2; const ks=Object.keys(P.err); while(ks.length>60)delete P.err[ks.shift()]; }
+  else if(k in P.err&&!fresh[k]){ P.err[k]-=1; if(P.err[k]<=0)delete P.err[k]; }
+}
+const errCount=()=>Object.keys(P.err).length;
+
+/* ---------- écrans ---------- */
+const V={view:'home',day:1,slide:0,ex:null,confirmReset:false,sc:{clef:'sol',lvl:0,mode:'kbd'},s:null};
+const app=document.getElementById('app'), tabs=document.getElementById('tabs');
+function go(view,extra){Object.assign(V,{view,confirmReset:false},extra||{});render();window.scrollTo(0,0);}
+
+function viewHome(){
+  const nd=nextDay(), count=range(1,30).filter(passed).length, ec=errCount();
+  let h=`<h1>Solfège en 30 jours</h1><p class="lede">Pour préparer le piano. Chaque jour : un petit cours illustré, étape par étape, puis une séance en trois temps, révision de vos erreurs, oreille, exercice du jour.</p>`;
+  h+=nd?`<button class="btn" data-act="day" data-day="${nd}"><span>${count?'Reprendre':'Commencer'} : jour ${nd}<small>${esc(DAYS[nd-1].t)}</small></span></button>`
+       :`<p class="tip"><b>Programme terminé.</b> Continuez avec l'entraînement libre pour entretenir la lecture et l'oreille.</p>`;
+  h+=`<p class="lede" style="margin:18px 0 0">${count} leçon${count>1?'s':''} validée${count>1?'s':''} sur 30${ec?`, ${ec} point${ec>1?'s':''} à revoir`:''}</p><div class="meter"><i style="width:${count/30*100}%"></i></div>`;
+  WEEKS.forEach((w,wi)=>{
+    const days=range(w.from,w.to), done=days.filter(passed).length;
+    const items=days.map((d,i)=>({step:w.shape[i],dur:passed(d)?'q':'h',cls:passed(d)?'done':(d===nd?'next':''),ring:d===nd,label:d,hit:true,
+      attrs:`data-act="day" data-day="${d}" role="button" tabindex="0" aria-label="Jour ${d} : ${esc(DAYS[d-1].t)}${passed(d)?', validé':''}"`}));
+    h+=`<section class="week"><header><h3>Semaine ${wi+1} : ${esc(w.t)}</h3><span>${done} sur ${days.length}</span></header>
+      <div class="score">${staff({w:340,items,gap:40,alt:'Leçons de la semaine '+(wi+1)})}</div>
+      <details${days.includes(nd)?' open':''}><summary>Voir les leçons</summary>${days.map(d=>`<button class="row" data-act="day" data-day="${d}"><b>${d}</b><span>${esc(DAYS[d-1].t)}</span>${passed(d)?`<em>${P.done['d'+d]} %</em>`:''}</button>`).join('')}</details></section>`;
+  });
+  h+=`<p style="margin-top:28px;text-align:center">${V.confirmReset?`<button class="link" data-act="reset-yes">Confirmer : effacer ma progression</button> <button class="link" data-act="reset-no">Annuler</button>`:((count||ec)?`<button class="link" data-act="reset">Recommencer le programme à zéro</button>`:'')}</p>`;
+  return h;
+}
+const EXPL={1:['sol',0,7],2:['sol',0,7],3:['sol',0,7],4:['sol',0,7],5:['sol',0,12],6:['sol',0,12],12:['fa',-4,3],13:['fa',-7,0],16:['fa',-11,0],18:['sol',0,7]};
+function explorer(x){
+  return `<p><b>À vous d'explorer.</b> Touchez les touches du clavier : chaque note s'affiche à sa place sur la portée.</p><div class="explore" data-clef="${x[0]}"><div class="figbox xs">${staff({clef:x[0],center:true,items:[],alt:'Portée'})}</div><p class="xname">Touchez une touche</p>${kbd({lo:x[1],hi:x[2],labels:'do',live:true,act:'xkey',big:true})}</div>`;
+}
+function slidesOf(d){
+  const tmp=document.createElement('div'); tmp.innerHTML=DAYS[d-1].l(); const out=[]; let cur=[],hasFig=false,hasTxt=false;
+  const flush=()=>{if(cur.length){out.push(cur.join(''));cur=[];hasFig=false;hasTxt=false;}};
+  [...tmp.children].forEach(el=>{
+    const fig=el.tagName==='FIGURE', tip=el.classList.contains('tip'), txt=!fig&&!tip;
+    if((fig&&hasFig)||(txt&&hasFig)||(el.tagName==='P'&&!tip&&hasTxt))flush();
+    cur.push(el.outerHTML); if(fig)hasFig=true; if(txt)hasTxt=true;
+  }); flush();
+  if(EXPL[d])out.push(explorer(EXPL[d]));
+  return out;
+}
+function viewDay(){
+  const d=V.day, D=DAYS[d-1], sc=P.done['d'+d], n=D.n||10, sl=slidesOf(d), N=sl.length+1, k=Math.max(0,Math.min(V.slide,N-1)), last=k===N-1; V.slide=k;
+  let h=`<div class="top"><button class="back" data-act="home">‹ Programme</button><span class="tag">Jour ${d} sur 30</span></div>
+    <h2>${esc(D.t)}</h2><p class="qhead" style="margin:10px 0 0">${last?'La séance du jour':`Le cours, étape ${k+1} sur ${N-1}`}</p><div class="steps">${range(0,N-1).map(i=>`<i class="${i<=k?'on':''}"></i>`).join('')}</div>`;
+  if(!last)h+=`<div class="lesson">${sl[k]}</div>`;
+  else h+=`<p class="plan">${d>1?`<span><b>Échauffement</b>5 questions, vos erreurs passées en priorité</span>`:''}<span><b>Oreille</b>4 questions d'écoute</span><span><b>Exercice du jour</b>${n} questions sur le cours</span></p>
+    ${sc!==undefined?`<p class="lede">Meilleur score à l'exercice du jour : ${sc} %${sc>=70?', leçon validée.':'. Il faut 70 % pour valider.'}</p>`:''}`;
+  h+=`<div class="navrow">${k>0?`<button class="btn ghost" data-act="slide" data-to="${k-1}">Précédent</button>`:''}${last?`<button class="btn" data-act="start-day">Commencer la séance</button>`:`<button class="btn" data-act="slide" data-to="${k+1}">Suivant</button>`}</div>`;
+  if(!last&&sc!==undefined)h+=`<p style="text-align:center;margin-top:8px"><button class="link" data-act="slide" data-to="${N-1}">Passer le cours</button></p>`;
+  return h;
+}
+function viewFree(){
+  return `<h1>Entraînement libre</h1><p class="lede">Dix questions sur le thème de votre choix, autant de fois que vous voulez.</p>`+
+    `<button class="card feat" data-act="sight-setup"><b>Lecture à vue chronométrée</b><span>Les notes défilent sur la portée : lisez-en le plus possible en 60 secondes</span></button>`+
+    FREE.map((f,i)=>`<button class="card" data-act="start-free" data-i="${i}"><b>${esc(f[0])}</b><span>${esc(f[1])}</span></button>`).join('');
+}
+function viewEx(){
+  const E=V.ex, q=E.q, S=E.segs[E.si];
+  let h=`<div class="top"><button class="back" data-act="quit">‹ Quitter</button><span class="qhead">${E.segs.length>1?esc(S.name)+', ':'Question '}${E.i+1} sur ${S.n}</span></div>
+    <div class="meter"><i style="width:${E.count/E.total*100}%"></i></div>`;
+  if(q.review)h+=`<p class="tag rev">Révision d'une erreur passée</p>`;
+  h+=`<p class="qtext">${esc(q.q)}</p>`;
+  if(q.play)h+=`<button class="btn ghost listen" data-act="replay">Réécouter</button><p class="hint">${esc(q.note||'')} Pas de son ? Montez le volume et désactivez le mode silencieux.</p>`;
+  if(q.fig)h+=`<div class="figbox">${q.fig}</div>`;
+  if(q.choices){
+    const cols=q.cols===4?'c4':(q.cols>=2?'c2':'');
+    h+=`<div class="choices ${cols}">`+q.choices.map((c,i)=>{
+      let cls='choice'; if(E.answered){ if(i===q.a)cls+=' good'; else if(i===E.picked)cls+=' bad'; }
+      return `<button class="${cls}" data-act="answer" data-i="${i}" ${E.answered?'disabled':''}>${c.html||esc(c)}</button>`;}).join('')+`</div>`;
+  }
+  if(q.kbd){
+    const mark=Object.assign({},q.premark||{});
+    if(E.answered){
+      if(!E.ok&&E.picked!==null)mark[E.picked]='bad';
+      const good=q.seq?(E.ok?null:q.seq[E.pos]):(E.ok?E.picked:q.target);
+      if(good!==null)mark[good]='good';
+    }
+    if(q.seq)h+=`<p class="dots" id="dots">${q.seq.map((_,i)=>i<E.pos?'●':'○').join(' ')}</p>`;
+    h+=kbd(Object.assign({},q.kbd,{live:!E.answered,big:true,mark}));
+  }
+  if(q.tap)h+=`<div class="beats" id="beats"><i></i><i></i><i></i><i></i></div><button class="pad" id="pad" ${E.answered?'disabled':''}><span id="padtxt">${E.answered?'Terminé':'Démarrer'}</span><small>Quatre clics de départ, puis tapez le rythme ici, une frappe par note.</small></button>`;
+  h+=`<div class="fb" aria-live="polite">`;
+  if(E.answered){
+    h+=E.ok?`<p class="y">${esc(E.msg||'Bonne réponse.')}</p>`:`<p class="n">Pas tout à fait. ${esc(E.msg||q.why||'')}</p>`;
+    if(!E.ok)h+=`<button class="btn" data-act="next">${E.count+1<E.total?'Question suivante':'Voir le résultat'}</button>`;
+  }
+  return h+'</div>';
+}
+function viewResult(){
+  const E=V.ex, M=E.segs[E.segs.length-1], pct=Math.round(M.score/M.n*100), ok=pct>=70, isDay=E.origin.kind==='day', d=E.origin.day, ec=errCount();
+  let msg=pct>=90?'Excellent travail.':(ok?'C\'est acquis.':'Pas encore. Relisez la leçon, puis réessayez : il faut 70 % de bonnes réponses à l\'exercice du jour.');
+  let h=`<div class="top"><button class="back" data-act="${isDay?'home':'free'}">‹ ${isDay?'Programme':'Entraînement'}</button></div>
+    <h2>${isDay?(ok?`Jour ${d} validé`:`Jour ${d} : à refaire`):'Résultat'}</h2><p class="big">${M.score}<small> sur ${M.n}</small></p><p class="lede">${msg}</p>`;
+  if(E.segs.length>1)h+=`<p class="plan">${E.segs.slice(0,-1).map(s=>`<span>${esc(s.name)} : ${s.score} sur ${s.n}</span>`).join('')}${ec?`<span>${ec} point${ec>1?'s':''} à revoir, reposé${ec>1?'s':''} aux prochains échauffements</span>`:''}</p>`;
+  if(isDay){
+    if(ok&&d<30)h+=`<button class="btn" data-act="day" data-day="${d+1}"><span>Jour suivant<small>${esc(DAYS[d].t)}</small></span></button>`;
+    if(ok&&d===30)h+=`<p class="tip"><b>Vous avez terminé le programme.</b> Vous avez les bases pour commencer le piano.</p>`;
+    h+=`<button class="btn ${ok?'ghost':''}" data-act="${ok?'start-day':'day'}" data-day="${d}">${ok?'Refaire la séance':'Relire la leçon'}</button>`;
+    if(!ok)h+=`<button class="btn ghost" data-act="start-day">Réessayer tout de suite</button>`;
+    if(ok)h+=`<button class="btn ghost" data-act="sight-bonus">Bonus : 60 secondes de lecture à vue</button>`;
+    h+=`<button class="btn ghost" data-act="home">Retour au programme</button>`;
+  } else h+=`<button class="btn" data-act="start-free" data-i="${E.origin.i}">Rejouer</button><button class="btn ghost" data-act="free">Choisir un autre thème</button>`;
+  return h;
+}
+function render(){
+  const v=V.view;
+  app.innerHTML=(v==='home'?viewHome():v==='day'?viewDay():v==='free'?viewFree():v==='ex'?viewEx():v==='sightSetup'?viewSightSetup():v==='sight'?viewSight():v==='sightEnd'?viewSightEnd():viewResult()).replace(/ ([?!:;»%])/g,'\u00a0$1').replace(/« /g,'«\u00a0');
+  tabs.hidden=!(v==='home'||v==='free');
+  ['home','free'].forEach(k=>{const b=document.getElementById('tab-'+k); if(v===k)b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');});
+}
+
+/* ---------- lecture à vue chronométrée ---------- */
+const SPOOL={sol:[range(0,4),range(0,7),SOL],fa:[range(-4,0),FA1,FA]}, SDUR=60;
+const sightKey=()=>V.sc.clef+V.sc.lvl+V.sc.mode;
+function seg(k,opts){return `<div class="seg">${opts.map(o=>`<button data-act="sc" data-k="${k}" data-v="${o[0]}" aria-pressed="${String(V.sc[k])===String(o[0])}">${o[1]}</button>`).join('')}</div>`;}
+function viewSightSetup(){
+  const b=P.best[sightKey()];
+  return `<div class="top"><button class="back" data-act="free">‹ Entraînement</button></div><h2>Lecture à vue</h2>
+    <p class="lede">Une file de notes sur la portée. Vous jouez celle qui est entourée, la file avance. Objectif : en lire le plus possible en ${SDUR} secondes.</p>
+    <h3>Clé</h3>${seg('clef',[['sol','Clé de sol'],['fa','Clé de fa']])}
+    <h3>Notes</h3>${seg('lvl',[[0,'5 notes'],[1,'Une octave'],[2,'Toutes']])}
+    <h3>Réponse</h3>${seg('mode',[['kbd','Sur le clavier'],['name','Par le nom']])}
+    <p class="lede">${b?`Votre record avec ces réglages : ${b} notes.`:'Pas encore de record avec ces réglages.'}</p>
+    <button class="btn" data-act="sight-start">Démarrer</button>`;
+}
+function pushNote(){const S=V.s;let d;do{d=pick(S.pool);}while(d===S.queue[S.queue.length-1]);S.queue.push(d);}
+function startSight(){
+  const c=V.sc; ac(); stopSight(); V.s={clef:c.clef,pool:SPOOL[c.clef][c.lvl],mode:c.mode,key:sightKey(),queue:[],score:0,errs:0,miss:0,t0:0,over:false,timer:null,fresh:{}};
+  while(V.s.queue.length<6)pushNote(); go('sight');
+}
+function stopSight(){ if(V.s&&V.s.timer){clearInterval(V.s.timer);V.s.timer=null;} }
+function sightStaff(mv){const S=V.s;return staff({clef:S.clef,w:340,gap:46,items:S.queue.map((d,i)=>({d,cls:(i===0?'hl':'dim')+(mv?' mv':''),ring:i===0})),alt:'Notes à lire'});}
+function viewSight(){
+  const S=V.s, r=kbRange(Math.min(...S.pool),Math.max(...S.pool));
+  return `<div class="top"><button class="back" data-act="sight-quit">‹ Quitter</button><span class="qhead" id="stime">${SDUR} s</span></div>
+    <div class="meter"><i id="sbar" style="width:100%"></i></div>
+    <p class="shead"><span>Notes lues</span><span id="sscore">0</span></p>
+    <div class="figbox" id="sstaff">${sightStaff(false)}</div>
+    <p class="hint" id="shint" style="margin:0 0 10px">Le chrono démarre à votre première réponse.</p>
+    ${S.mode==='kbd'?kbd({lo:r[0],hi:r[1],labels:'do',live:true,act:'skey',big:true}):`<div class="choices c4">${NAMES.map((n,i)=>`<button class="choice" data-act="sname" data-i="${i}">${n}</button>`).join('')}</div>`}`;
+}
+function sightTick(){
+  const S=V.s; if(!S||S.over)return; const rem=SDUR-(performance.now()-S.t0)/1000, bar=document.getElementById('sbar'), tm=document.getElementById('stime');
+  if(bar)bar.style.width=Math.max(0,rem/SDUR*100)+'%'; if(tm)tm.textContent=Math.max(0,Math.ceil(rem))+'\u00a0s';
+  if(rem<=0){ stopSight(); S.over=true; S.record=S.score>(P.best[S.key]||0); if(S.record)P.best[S.key]=S.score; save(); go('sightEnd'); }
+}
+function sightAnswer(val,el){
+  const S=V.s; if(!S||S.over||V.view!=='sight')return; const c=ac();
+  if(!S.t0){S.t0=performance.now();S.timer=setInterval(sightTick,200);const hi=document.getElementById('shint');if(hi)hi.textContent='';}
+  const d=S.queue[0], ok=S.mode==='kbd'?val===semis(d):val===mod(d,7);
+  if(c)tone(S.mode==='kbd'?fS(val):freq(d),c.currentTime+0.01,0.5,ok||S.mode==='kbd'?0.22:0.0001);
+  document.querySelectorAll('.kbd .good,.choices .good').forEach(x=>x.classList.remove('good'));
+  if(ok){
+    S.score++; S.miss=0; S.queue.shift(); pushNote();
+    document.getElementById('sstaff').innerHTML=sightStaff(true); document.getElementById('sscore').textContent=S.score;
+    const hi=document.getElementById('shint'); if(hi)hi.textContent='';
+  } else {
+    S.errs++; S.miss++; if(S.miss===1)record({rk:{type:'notes',clef:S.clef,pool:[d],kb:[Math.min(...S.pool),Math.max(...S.pool)]}},false,S.fresh);
+    el.classList.add('bad'); setTimeout(()=>el.classList.remove('bad'),300);
+    if(S.miss>=2){
+      const g=S.mode==='kbd'?document.querySelector(`.kbd [data-s="${semis(d)}"]`):document.querySelector(`.choices [data-i="${mod(d,7)}"]`); if(g)g.classList.add('good');
+      const hi=document.getElementById('shint'); if(hi)hi.textContent=`C'est un ${nameOf(d)}, indiqué en vert.`;
+    }
+  }
+}
+function viewSightEnd(){
+  const S=V.s, tot=S.score+S.errs, acc=tot?Math.round(S.score/tot*100):0, ec=errCount();
+  return `<div class="top"><button class="back" data-act="free">‹ Entraînement</button></div><h2>${S.record?'Nouveau record':'Temps écoulé'}</h2>
+    <p class="big">${S.score}<small> note${S.score>1?'s':''} en ${SDUR} s</small></p>
+    <p class="plan"><span>Erreurs : ${S.errs}</span><span>Précision : ${acc} %</span><span>Record avec ces réglages : ${P.best[S.key]||S.score} notes</span>${ec?`<span>Les notes ratées reviendront dans vos prochains échauffements</span>`:''}</p>
+    <button class="btn" data-act="sight-start">Rejouer</button><button class="btn ghost" data-act="sight-setup">Changer les réglages</button><button class="btn ghost" data-act="home">Retour au programme</button>`;
+}
+/* ---------- démonstrations du cours ---------- */
+const PC=[[0,0],[0,1],[1,0],[1,1],[2,0],[3,0],[3,1],[4,0],[4,1],[5,0],[5,1],[6,0]];
+function exploreKey(s,el){
+  const c=ac(); if(c)tone(fS(s),c.currentTime+0.01,0.8);
+  const box=el.closest('.explore'); if(!box)return; const pc=PC[mod(s,12)], d=pc[0]+7*Math.floor(s/12), it={d,cls:'hl'}; if(pc[1])it.acc=1;
+  box.querySelector('.xs').innerHTML=staff({clef:box.dataset.clef,center:true,items:[it],alt:'Note jouée'});
+  box.querySelector('.xname').textContent=nameOf(d)+(pc[1]?` dièse (ou ${nameOf(d+1)} bémol)`:'')+(d===0&&!pc[1]?' du milieu':'');
+}
+function demoRhythm(toks,svg){
+  const c=ac(), t0=(c?c.currentTime:0)+0.12, its=svg?[...svg.querySelectorAll('g.it')].slice(1):[], list=toks.map(T); let t=0;
+  const tot=list.reduce((a,it)=>a+beatsOf(it),0); for(let b=0;b<Math.ceil(tot);b++)if(c)click(t0+b*BT,b===0);
+  list.forEach((it,i)=>{ const b=beatsOf(it), at=t; if(!it.rest&&c)tone(freq(5),t0+at*BT,Math.max(0.15,b*BT*0.92),0.25);
+    setTimeout(()=>{its.forEach(g=>g.classList.remove('hl'));if(its[i])its[i].classList.add('hl');},120+at*BT*1000); t+=b; });
+  setTimeout(()=>its.forEach(g=>g.classList.remove('hl')),120+t*BT*1000);
+}
+
+/* ---------- déroulé d'une séance ---------- */
+let timers=[];
+const later=(fn,ms)=>{timers.push(setTimeout(fn,ms));};
+const clearTimers=()=>{timers.forEach(clearTimeout);timers=[];};
+function startDay(d){
+  const D=DAYS[d-1], segs=[], rev=Object.keys(P.err).reverse().slice(0,3);
+  if(d>1)segs.push({name:'Échauffement',n:5,score:0,gen:()=>{
+    const k=rev.pop(); if(k){try{const q=makeQ(JSON.parse(k));q.review=true;return q;}catch(e){}}
+    return makeQ(DAYS[rnd(d-1)].ex);}});
+  const ear=earSpec(d); segs.push({name:'Oreille',n:4,score:0,gen:()=>makeQ(ear)});
+  segs.push({name:'Exercice du jour',n:D.n||10,score:0,gen:()=>makeQ(D.ex)});
+  startEx(segs,{kind:'day',day:d});
+}
+function startEx(segs,origin){ ac(); V.ex={segs,origin,fresh:{},si:0,i:0,count:0,total:segs.reduce((a,s)=>a+s.n,0),q:null}; newQ(); }
+function newQ(){
+  clearTimers(); const E=V.ex; E.q=E.segs[E.si].gen(); E.answered=false; E.ok=false; E.picked=null; E.msg=''; E.pos=0;
+  E.tap=E.q.tap?{phase:'idle',taps:[],start:0}:null;
+  go('ex'); if(E.q.play){const q=E.q;later(()=>{if(V.ex&&V.ex.q===q)q.play();},250);}
+}
+function finish(ok,msg){
+  const E=V.ex; if(!E||E.answered)return; E.answered=true; E.ok=ok; E.msg=msg||''; if(ok)E.segs[E.si].score++;
+  record(E.q,ok,E.fresh); render();
+  if(E.q.after&&E.q.choices)E.q.after();
+  if(ok&&E.q.onOk)E.q.onOk();
+  if(ok)later(next,E.q.onOk?1700:(E.q.after||E.q.kbd?1000:800));
+}
+function answer(i){ const E=V.ex; if(!E||E.answered||!E.q.choices)return; E.picked=i; finish(i===E.q.a); }
+function keyTap(s){
+  const E=V.ex; if(!E||E.answered||!E.q.kbd)return; const q=E.q, c=ac(); if(c)tone(fS(s),c.currentTime+0.01,0.7);
+  if(q.seq){
+    if(s===q.seq[E.pos]){ E.pos++; if(E.pos===q.seq.length){E.picked=s;finish(true);} else {const el=document.getElementById('dots'); if(el)el.textContent=q.seq.map((_,i)=>i<E.pos?'●':'○').join(' ');} }
+    else { E.picked=s; finish(false,`La ${ordinal(E.pos+1)} note était un ${q.seqNames[E.pos]}, indiqué en vert.`); }
+    return;
+  }
+  E.picked=s; finish(q.targetMod?mod(s,12)===mod(q.target,12):s===q.target);
+}
+function padDown(){
+  const E=V.ex; if(!E||E.answered||!E.tap)return; const Tp=E.tap, pad=document.getElementById('pad');
+  if(Tp.phase==='idle'){startTap();return;}
+  const rel=(performance.now()-Tp.start)/1000; if(rel<-0.3)return;
+  Tp.taps.push(rel); const c=ac(); if(c)tone(freq(5),c.currentTime+0.005,0.16,0.2);
+  if(pad){pad.classList.add('hit');setTimeout(()=>pad.classList.remove('hit'),90);}
+}
+const BT=60/72;
+function startTap(){
+  const E=V.ex, q=E.q, Tp=E.tap, c=ac(), tA=(c?c.currentTime:0)+0.15;
+  Tp.phase='count'; Tp.taps=[]; Tp.start=performance.now()+150+4*BT*1000;
+  for(let i=0;i<8;i++){
+    if(c)click(tA+i*BT,i%4===0);
+    later(()=>{ if(V.ex!==E||E.q!==q)return; if(i===4)Tp.phase='go';
+      const b=document.getElementById('beats'), t=document.getElementById('padtxt');
+      if(b)[...b.children].forEach((el,k)=>el.classList.toggle('on',k===i%4));
+      if(t)t.textContent=i<4?`Écoutez : ${i+1}`:`À vous : ${i-3}`; },150+i*BT*1000);
+  }
+  later(()=>{ if(V.ex!==E||E.q!==q)return; evalTap(); },150+8*BT*1000+220);
+}
+function evalTap(){
+  const E=V.ex, exp=[]; let t=0; E.q.tap.toks.map(T).forEach(it=>{if(!it.rest)exp.push(t);t+=beatsOf(it)*BT;});
+  const taps=E.tap.taps;
+  if(taps.length!==exp.length){finish(false,taps.length?`Il fallait ${exp.length} frappe${exp.length>1?'s':''}, une par note, et vous en avez fait ${taps.length}.`:'Vous n\'avez pas tapé. Après les quatre clics de départ, frappez une fois par note.');return;}
+  const offs=taps.map((x,i)=>x-exp[i]), med=median(offs), res=offs.map(x=>x-med); let wi=0; res.forEach((r,i)=>{if(Math.abs(r)>Math.abs(res[wi]))wi=i;});
+  if(Math.abs(med)>0.45){finish(false,`Vous êtes parti trop ${med>0?'tard':'tôt'}. La première note tombe sur le premier clic après le décompte.`);return;}
+  if(Math.abs(res[wi])>0.17){finish(false,`La ${ordinal(wi+1)} frappe est arrivée trop ${res[wi]>0?'tard':'tôt'}. Comptez les temps à voix haute.`);return;}
+  finish(true,'Bien en place.');
+}
+function next(){
+  clearTimers(); const E=V.ex; if(!E||!E.answered)return; E.i++; E.count++;
+  if(E.i>=E.segs[E.si].n){E.si++;E.i=0;}
+  if(E.si<E.segs.length){newQ();return;}
+  E.si=E.segs.length-1;
+  if(E.origin.kind==='day'){const M=E.segs[E.si], k='d'+E.origin.day, pct=Math.round(M.score/M.n*100); if(!(k in P.done)||pct>P.done[k])P.done[k]=pct;}
+  save(); go('result');
+}
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]'); if(!el)return; const a=el.dataset.act;
+  if(a==='home'||a==='free'){clearTimers();stopSight();go(a);}
+  else if(a==='day')go('day',{day:+el.dataset.day,slide:0});
+  else if(a==='slide')go('day',{slide:+el.dataset.to});
+  else if(a==='xkey')exploreKey(+el.dataset.s,el);
+  else if(a==='play-r'){const f=el.closest('figure');demoRhythm(el.dataset.r.split(','),f?f.querySelector('svg'):null);}
+  else if(a==='sight-setup'){stopSight();go('sightSetup');}
+  else if(a==='sc'){const k=el.dataset.k,v=el.dataset.v;V.sc[k]=k==='lvl'?+v:v;render();}
+  else if(a==='sight-start')startSight();
+  else if(a==='sight-bonus'){const d=V.ex.origin.day;V.sc={clef:'sol',lvl:d<4?0:d<5?1:2,mode:'kbd'};startSight();}
+  else if(a==='sight-quit'){stopSight();save();go('sightSetup');}
+  else if(a==='skey')sightAnswer(+el.dataset.s,el);
+  else if(a==='sname')sightAnswer(+el.dataset.i,el);
+  else if(a==='start-day')startDay(V.day);
+  else if(a==='start-free'){const i=+el.dataset.i;startEx([{name:FREE[i][0],n:10,score:0,gen:()=>makeQ(FREE[i][2])}],{kind:'free',i});}
+  else if(a==='answer')answer(+el.dataset.i);
+  else if(a==='key')keyTap(+el.dataset.s);
+  else if(a==='next')next();
+  else if(a==='replay'){if(V.ex&&V.ex.q.play)V.ex.q.play();}
+  else if(a==='quit'){clearTimers();save();const o=V.ex.origin;V.ex=null;o.kind==='day'?go('day',{day:o.day,slide:99}):go('free');}
+  else if(a==='reset'){V.confirmReset=true;render();}
+  else if(a==='reset-no'){V.confirmReset=false;render();}
+  else if(a==='reset-yes'){P={done:{},err:{},best:{}};save();go('home');}
+});
+document.addEventListener('pointerdown',e=>{ if(e.target.closest&&e.target.closest('#pad')){e.preventDefault();padDown();} });
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return; const t=e.target; if(!t.matches)return;
+  if(t.matches('#pad')){e.preventDefault();if(!e.repeat)padDown();}
+  else if(t.matches('g[data-act]')){e.preventDefault();t.dispatchEvent(new MouseEvent('click',{bubbles:true}));}
+});
+render(); initCloud();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+</script>
+</body>
+</html>
